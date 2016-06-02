@@ -1,0 +1,100 @@
+@import url(https://fonts.googleapis.com/css?family=Lato);
+* {
+  font-family: "Lato", sans-serif; }
+
+html, body {
+  background: #5A5050;
+  padding: 0px;
+  margin: 0px; }
+
+.header {
+  position: fixed;
+  z-index: 1;
+  top: 0px;
+  background: #3EACA8;
+  color: #FFF;
+  padding: 0px;
+  width: 100%;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.4);
+  border-bottom: 1px solid #E5EEC1;
+  overflow: hidden;
+  height: 50px;
+  vertical-align: middle;
+  transition: 0.5s; }
+  .header h2 {
+    font-size: 1.5em;
+    margin: 0px;
+    padding: 0px 15px 0px 15px;
+    display: inline-block;
+    vertical-align: middle;
+    transition: 0.5s; }
+  .header .left, .header .right {
+    width: calc(50% - 10px);
+    height: calc(100% - 10px);
+    margin: 0px;
+    padding: 5px;
+    display: inline-block;
+    vertical-align: middle;
+    transition: 0.5s; }
+  .header .right {
+    text-align: right; }
+  .header ul {
+    list-style: none;
+    display: inline-block;
+    padding: 0px 10px 0px 10px;
+    margin: 0px;
+    border-left: 1px solid #A2D4AB; }
+    .header ul li {
+      display: inline-block;
+      padding: 10px;
+      border-radius: 5px;
+      text-transform: lowercase;
+      transition: 0.5s; }
+    .header ul li:hover, .header ul .selected {
+      box-shadow: inset 5px 5px 0px rgba(0, 0, 0, 0.2);
+      text-shadow: 5px 5px 0px rgba(0, 0, 0, 0.2);
+      background: #547A82;
+      cursor: pointer; }
+    .header ul .selected {
+      background: #5A5050; }
+  .header .theme {
+    font-size: 0.8em;
+    padding: 5px;
+    transition: 0.5s; }
+    .header .theme li {
+      padding: 5px; }
+  .header #slim-toggle {
+    vertical-align: bottom;
+    fill: #FFF;
+    width: 28px;
+    height: 28px;
+    padding: 5px;
+    transition: 0.5s; }
+  .header #slim-toggle:hover {
+    cursor: pointer; }
+
+.slim-header {
+  padding: 0px;
+  margin: 0px;
+  height: 30px; }
+  .slim-header h2 {
+    font-size: 0.8em; }
+  .slim-header .left, .slim-header .right {
+    padding: 0px;
+    width: 50%; }
+  .slim-header ul li {
+    padding: 5px;
+    font-size: 0.8em;
+    border: none; }
+  .slim-header ul li:hover, .slim-header .header ul .selected, .header .slim-header ul .selected {
+    border: none; }
+  .slim-header ul .selected {
+    border: none; }
+  .slim-header .theme {
+    display: none; }
+  .slim-header #slim-toggle {
+    height: 20px;
+    width: 20px;
+    transform: rotate(180deg); }
+
+/*# sourceMappingURL=nav.css.map */

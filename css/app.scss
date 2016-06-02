@@ -1,0 +1,223 @@
+@import url(https://fonts.googleapis.com/css?family=Lato);
+
+$global-font: 'Lato', sans-serif;
+
+// "chill" shade set
+$shade-1: #E5EEC1;
+$shade-2: #A2D4AB;
+$shade-3: #3EACA8;
+$shade-4: #547A82;
+$shade-5: #5A5050;
+
+$soft-shadow: rgba(0, 0, 0, 0.4);
+$softer-shadow: rgba(0, 0, 0, 0.2);
+$invisible: rgba(0, 0, 0, 0);
+
+.app {
+	display: block;
+	color: #FFF;
+	height: calc(100vh - 50px);
+	width: 100%;
+
+	margin-top: 50px;
+
+	transition: 0.5s;
+
+	#control-panel {
+		position: fixed;
+		top: 50px;
+
+		background: $shade-5;
+		border: 1px solid $shade-4;
+		//width: 20%;
+		max-width: 40%;
+		min-width: 200px;
+		height: 100%;
+
+		box-shadow: 0px 0px 10px $soft-shadow;
+		transition: 0.5s;
+
+		#control {
+			display: inline-block;
+			width: calc(100% - 30px);
+			padding: 10px;
+
+			overflow: scroll;
+		}
+
+		#control-resize {
+			position: absolute;
+			//transform: rotate();
+			//background: $shade-3;
+			padding: 5px;
+			width: 20px;
+			height: 20px;
+			bottom: 50px;
+			right: -25px;
+			transform: rotate(270deg);
+			fill: #FFF;
+
+			transition: 0.5s;
+		}
+
+		#control-resize:hover {
+			fill: $shade-3;
+			cursor: pointer;
+		}
+
+		.hidden {
+			transform: rotate(90deg) !important;
+		}
+	}
+
+	#code-panel {
+		@extend #control-panel;
+		right: 0px;
+
+		#code-container {
+			display: inline-block;
+			width: calc(100% - 20px);
+			padding: 10px;
+			overflow: scroll;
+		}
+
+		#code-resize {
+			position: absolute;
+			padding: 5px;
+			width: 20px;
+			height: 20px;
+			bottom: 50px;
+			left: -25px;
+			transform: rotate(90deg);
+			fill: #FFF;
+			transition: 0.5s;
+		}
+
+		#code-resize:hover {
+			fill: $shade-3;
+			cursor: pointer;
+		}
+
+		.hidden {
+			transform: rotate(270deg) !important;
+		}
+	}
+}
+
+.slim-app {
+	margin-top: 30px;
+	height: calc(100vh - 30px);
+
+	#control-panel, #code-panel {
+		top: 30px;
+	}
+
+	#control-resize, #code-resize {
+		bottom: 30px !important;
+	}
+}
+
+.section {
+
+	border: 1px solid $shade-4;
+	border-radius: 5px;
+	box-shadow: 1px 1px 0px $softer-shadow;
+	margin-bottom: 10px;
+	overflow: hidden;
+
+	h4 {
+		text-align: center;
+		padding: 5px;
+		margin: 0px;
+		background: $shade-4;
+		border-bottom: 1px solid $shade-4;
+		text-shadow: 2px 2px 0px $softer-shadow;
+	}
+
+	.content {
+		color: #FFF;
+		width: 100%;
+		background: $shade-5;
+		border-radius: 5px;
+		box-shadow: inset 5px 5px 0px $softer-shadow;
+		transition: 0.5s;
+	}
+
+	#code-text {
+		font-size: 0.8em;
+		border: none;
+		min-height: 400px;
+		height: 400px;
+		background: $shade-5;
+		resize: vertical;
+		width: 100%;
+		font-family: "Monaco", monospace;
+		overflow: scroll;
+		transition: none;
+		color: #FFF;
+		padding: 0px;
+	}
+}
+
+.hidden-section {
+
+	.content {
+		min-height: 0px !important;
+		height: 0px !important;
+		overflow: hidden;
+	}
+
+	#code-text {
+		height: 0px;
+		min-height: 0px;
+	}
+}
+
+.section-bottom-opts {
+	list-style: none;
+	display: inline-block;
+	padding: 0px;
+	margin: 0px;
+	width: 100%;
+
+	li {
+		text-align: center;
+		display: inline-block;
+		width: calc(33.33333% - 10px);
+		background: $shade-4;
+		margin: 0px;
+		transition: 0.5s;
+		padding: 5px;
+		//border-radius: 5px;
+
+		svg {
+			height: 20px;
+			fill: #FFF;
+		}
+	}
+
+	li:hover {
+		background: $shade-3;
+	}
+
+	.disabled {
+		svg {
+			fill: $shade-5;
+		}
+	}
+
+	.disabled:hover {
+		background: $shade-4;
+	}
+}
+
+#canvas {
+
+	width: 100%;
+	height: calc(100vh - 50px);
+
+	canvas {
+		width: 100%;
+		height: 100%;
+	}
+}
