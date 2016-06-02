@@ -13,6 +13,11 @@ $soft-shadow: rgba(0, 0, 0, 0.4);
 $softer-shadow: rgba(0, 0, 0, 0.2);
 $invisible: rgba(0, 0, 0, 0);
 
+.hidden {
+	display: none;
+	background: #F00 !important;
+}
+
 .app {
 	display: block;
 	color: #FFF;
@@ -42,7 +47,7 @@ $invisible: rgba(0, 0, 0, 0);
 			width: calc(100% - 30px);
 			padding: 10px;
 
-			overflow: scroll;
+			overflow: hidden;
 		}
 
 		#control-resize {
@@ -65,7 +70,7 @@ $invisible: rgba(0, 0, 0, 0);
 			cursor: pointer;
 		}
 
-		.hidden {
+		.toggled {
 			transform: rotate(90deg) !important;
 		}
 	}
@@ -78,7 +83,7 @@ $invisible: rgba(0, 0, 0, 0);
 			display: inline-block;
 			width: calc(100% - 20px);
 			padding: 10px;
-			overflow: scroll;
+			overflow: hidden;
 		}
 
 		#code-resize {
@@ -98,7 +103,7 @@ $invisible: rgba(0, 0, 0, 0);
 			cursor: pointer;
 		}
 
-		.hidden {
+		.toggled {
 			transform: rotate(270deg) !important;
 		}
 	}
@@ -123,7 +128,7 @@ $invisible: rgba(0, 0, 0, 0);
 	border-radius: 5px;
 	box-shadow: 1px 1px 0px $softer-shadow;
 	margin-bottom: 10px;
-	overflow: hidden;
+	overflow-y: hidden;
 
 	h4 {
 		text-align: center;
@@ -152,7 +157,7 @@ $invisible: rgba(0, 0, 0, 0);
 		resize: vertical;
 		width: 100%;
 		font-family: "Monaco", monospace;
-		overflow: scroll;
+		overflow-y: scroll;
 		transition: none;
 		color: #FFF;
 		padding: 0px;
@@ -208,6 +213,35 @@ $invisible: rgba(0, 0, 0, 0);
 
 	.disabled:hover {
 		background: $shade-4;
+	}
+}
+
+#tooltip {
+	position: fixed;
+	top: 0;
+	left: 0;
+	background: $shade-5;
+	border: 1px solid $shade-4;
+	box-shadow: 5px 5px 0px $softer-shadow;
+	color: #FFF;
+	padding: 5px;
+	overflow: hidden;
+
+	h4 {
+		text-align: center;
+		margin: 0px;
+		padding: 5px;
+		border-bottom: 1px solid $shade-4;
+	}
+
+	p {
+		margin: 0px;
+		padding: 5px;
+		font-size: 0.8em;
+	}
+
+	pre {
+		font-family: "Monaco", monospace;
 	}
 }
 

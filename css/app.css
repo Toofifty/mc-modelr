@@ -1,4 +1,8 @@
 @import url(https://fonts.googleapis.com/css?family=Lato);
+.hidden {
+  display: none;
+  background: #F00 !important; }
+
 .app {
   display: block;
   color: #FFF;
@@ -20,7 +24,7 @@
       display: inline-block;
       width: calc(100% - 30px);
       padding: 10px;
-      overflow: scroll; }
+      overflow: hidden; }
     .app #control-panel #control-resize, .app #code-panel #control-resize {
       position: absolute;
       padding: 5px;
@@ -34,7 +38,7 @@
     .app #control-panel #control-resize:hover, .app #code-panel #control-resize:hover {
       fill: #3EACA8;
       cursor: pointer; }
-    .app #control-panel .hidden, .app #code-panel .hidden {
+    .app #control-panel .toggled, .app #code-panel .toggled {
       transform: rotate(90deg) !important; }
   .app #code-panel {
     right: 0px; }
@@ -42,7 +46,7 @@
       display: inline-block;
       width: calc(100% - 20px);
       padding: 10px;
-      overflow: scroll; }
+      overflow: hidden; }
     .app #code-panel #code-resize {
       position: absolute;
       padding: 5px;
@@ -56,7 +60,7 @@
     .app #code-panel #code-resize:hover {
       fill: #3EACA8;
       cursor: pointer; }
-    .app #code-panel .hidden {
+    .app #code-panel .toggled {
       transform: rotate(270deg) !important; }
 
 .slim-app {
@@ -72,7 +76,7 @@
   border-radius: 5px;
   box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
   margin-bottom: 10px;
-  overflow: hidden; }
+  overflow-y: hidden; }
   .section h4 {
     text-align: center;
     padding: 5px;
@@ -96,7 +100,7 @@
     resize: vertical;
     width: 100%;
     font-family: "Monaco", monospace;
-    overflow: scroll;
+    overflow-y: scroll;
     transition: none;
     color: #FFF;
     padding: 0px; }
@@ -132,6 +136,28 @@
     fill: #5A5050; }
   .section-bottom-opts .disabled:hover {
     background: #547A82; }
+
+#tooltip {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: #5A5050;
+  border: 1px solid #547A82;
+  box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.2);
+  color: #FFF;
+  padding: 5px;
+  overflow: hidden; }
+  #tooltip h4 {
+    text-align: center;
+    margin: 0px;
+    padding: 5px;
+    border-bottom: 1px solid #547A82; }
+  #tooltip p {
+    margin: 0px;
+    padding: 5px;
+    font-size: 0.8em; }
+  #tooltip pre {
+    font-family: "Monaco", monospace; }
 
 #canvas {
   width: 100%;

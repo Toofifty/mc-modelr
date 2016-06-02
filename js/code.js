@@ -17,10 +17,10 @@ $(document).ready(function() {
 			var end = area.selectionEnd;
 			var value = $(area).val();
 
-			// set textarea value to: text before caret + tab + text after caret
+			// set textarea value to: text before caret + char + text after caret
 			$(area).val(value.substring(0, start) + chars + value.substring(end));
 
-			// put caret at right position again (add one for the tab)
+			// put caret at right position again
 			area.selectionStart = area.selectionEnd = start + chars.length;
 
 			if (prevent) { e.preventDefault(); }
@@ -52,24 +52,6 @@ $(document).ready(function() {
 	/* load text from cookies */
 	var json = Cookies.get("json-text");
 	$("#code-text").val(json ? json : JSON.stringify(sack_json, null, 4));
-
-	var update_model = function() {
-		var json = $("#code-text").val();
-		/* store current text in user's cookies */
-		Cookies.set("json-text", json);
-
-		// give me all the errors
-		model = new Model(JSON.parse(json));
-
-		// try {
-		// 	model = new Model(JSON.parse(json));
-		// 	// show valid JSON in UI
-		// } catch (e) {
-		// 	console.log("Error building model.");
-		// 	console.log(e);
-		// 	// show invalid JSON in UI
-		// }
-	}
 
 	// $("#code-text").keyup(function(e) {
 	// 	update_model();

@@ -40,6 +40,57 @@ var Model = function(json, child=null) {
 				this.elements.push(new Element(this, node.elements[index]));
 			}
 		}
+		console.log("Model built successfully.");
+	}
+
+	/*
+		Render all the model components to the scene
+	*/
+	this.render = function(scene) {
+		// render parent
+		if (this.parent != null) {
+			this.parent.render(scene);
+		}
+
+		// render all elements
+		for (i in this.elements) {
+			this.elements[i].render(scene);
+		}
+	}
+
+	/*
+		Determine which element in being hovered over
+	*/
+	this.on_hover = function(hovered) {
+		if (hovered.length > 0) {
+			var top = hovered[0].object;
+			if (this.hover_element != null && (top == this.hover_element 
+					|| top == this.hover_element.outline)) {
+				return;
+			} 
+			for (i in this.elements) {
+				if (top == this.elements[i].box) {
+					if (this.hover_element != null) {
+						this.hover_element.off_hover();
+					}
+					this.elements[i].on_hover();
+					this.hover_element = this.elements[i];
+					return;
+				}
+			}
+		}
+
+		if (this.hover_element != null) {
+			this.hover_element.off_hover();
+			this.hover_element = null;
+		}
+	}
+
+	/*
+		Build HTML into the #structure element
+	*/
+	this.build_structure = function() {
+		var section = $("#structure");
 	}
 
 	/*
@@ -92,6 +143,8 @@ var Model = function(json, child=null) {
 	// elements
 	this.elements = [];
 
+	this.hover_element = null;
+
 	// ?
 	this.ref_str;
 
@@ -125,6 +178,8 @@ var Element = function(model, node) {
 		this.from = vector_from_array(node.from);
 		this.to = vector_from_array(node.to);
 
+		this.build_box();
+
 		// determine rotation of the object
 		if (node.rotation !== undefined) {
 			// set the origin (optional, default to 0,0,0)
@@ -156,13 +211,60 @@ var Element = function(model, node) {
 		Build the THREE.js box to be used for rendering the object
 	*/
 	this.build_box = function() {
-		var size = from.diff(to);
+		var size = this.from.diff(this.to);
 		this.box = new THREE.Mesh(
 			new THREE.BoxGeometry(size.x, size.y, size.z),
-			new THREE.MeshBasicMaterial({color: 0x00ff00})
+			new THREE.MeshLambertMaterial({color: this.color})
 		);
-		var midpoint = from.add(size.div(2));
+		var midpoint = this.from.add(size.div(2));
 		this.box.position.set(midpoint.x, midpoint.y, midpoint.z);
+
+		this.outline = new THREE.Mesh(
+			new THREE.BoxGeometry(size.x + 0.5, size.y + 0.5, size.z + 0.5),
+			new THREE.MeshLambertMaterial({color: shades.mid, wireframe: false, transparent: true})
+		);
+		console.log(shades);
+
+		this.outline.position.set(midpoint.x, midpoint.y, midpoint.z);
+		this.outline.material.opacity = 0.2;
+	}
+
+	/*
+		Add this element to the scene
+	*/
+	this.render = function(scene) {
+		if (!this.in_scene && this.box != null) {
+			this.in_scene = true;
+			scene.add(this.box);
+		}
+		if (this.hover && !this.outline_in_scene) {
+			this.outline_in_scene = true;
+			scene.add(this.outline);
+		} else if (!this.hover && this.outline_in_scene) {
+			this.outline_in_scene = false;
+			scene.remove(this.outline);
+		}
+	}
+
+	/*
+		Action performed on element hover
+	*/
+	this.on_hover = function() {
+		this.hover = true;
+		var tt_text = "<pre>from: " + this.from.toString() + "\n"
+			+ "to:   " + this.to.toString(); + "</pre>";
+		create_tooltip(tt_text, true, this.name);
+		//this.box.material.color.set("#F0F");
+
+	}
+
+	/*
+		Action performed when hover focus is lost
+	*/
+	this.off_hover = function() {
+		this.hover = false;
+		clear_tooltip();
+		//this.box.material.color.set(this.color);
 	}
 
 	/*
@@ -230,6 +332,11 @@ var Element = function(model, node) {
 	// 3D box
 	this.box = null;
 	this.in_scene = false;
+
+	this.color = "#AAA";
+
+	this.outline = null;
+	this.outline_in_scene = false;
 
 	this.load_element(node);
 }

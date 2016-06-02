@@ -5,7 +5,27 @@
 html, body {
   background: #5A5050;
   padding: 0px;
-  margin: 0px; }
+  margin: 0px;
+  overflow: hidden; }
+
+::-webkit-scrollbar {
+  width: 10px; }
+
+::-webkit-scrollbar-track {
+  background: #5A5050; }
+
+::-webkit-scrollbar-thumb {
+  background: #547A82;
+  border-radius: 5px;
+  border: 3px solid #5A5050;
+  transition: 0.5s; }
+
+::-webkit-scrollbar-thumb:hover {
+  background: #3EACA8;
+  border: 2px solid #5A5050; }
+
+::-webkit-scrollbar-corner {
+  background: #E5EEC1; }
 
 .header {
   position: fixed;
@@ -64,7 +84,7 @@ html, body {
     .header .theme li {
       padding: 5px; }
   .header #slim-toggle {
-    vertical-align: bottom;
+    vertical-align: middle;
     fill: #FFF;
     width: 28px;
     height: 28px;
@@ -96,5 +116,28 @@ html, body {
     height: 20px;
     width: 20px;
     transform: rotate(180deg); }
+
+.shade {
+  width: 5px;
+  margin: 0px;
+  height: 100%;
+  display: inline-block;
+  vertical-align: middle;
+  z-index: 2; }
+
+.shade-1 {
+  background: #E5EEC1; }
+
+.shade-2 {
+  background: #A2D4AB; }
+
+.shade-3 {
+  background: #3EACA8; }
+
+.shade-4 {
+  background: #547A82; }
+
+.shade-5 {
+  background: #5A5050; }
 
 /*# sourceMappingURL=nav.css.map */

@@ -45,7 +45,7 @@ var Vector = function(x, y, z=null) {
 
 	this.add = function(other) {
 		if (this.z != null && other.z != null) {
-			return Vector(this.x + other.x, this.y + other.y,
+			return new Vector(this.x + other.x, this.y + other.y,
 				this.z + other.z);
 		}
 		return new Vector(this.x + other.x, this.y + other.y);

@@ -2,6 +2,10 @@
 	Scripts for controlling the UI/controls
 */
 
+// globals for utility use
+var create_tooltip;
+var clear_tooltip;
+
 $(document).ready(function() {
 	/*
 		PANEL RESIZING
@@ -80,10 +84,10 @@ $(document).ready(function() {
 		var resize = $("#control-resize");
 		if (show) {
 			panel.css("left", "0px");
-			resize.removeClass("hidden");
+			resize.removeClass("toggled");
 		} else {
 			panel.css("left", "-" + panel.css("width"));
-			resize.addClass("hidden");
+			resize.addClass("toggled");
 		}
 		Cookies.set("control-hidden", !show);
 	}
@@ -93,10 +97,10 @@ $(document).ready(function() {
 		var resize = $("#code-resize");
 		if (show) {
 			panel.css("right", "0px");
-			resize.removeClass("hidden");
+			resize.removeClass("toggled");
 		} else {
 			panel.css("right", "-" + panel.css("width"));
-			resize.addClass("hidden");
+			resize.addClass("toggled");
 		}
 		Cookies.set("code-hidden", !show);
 	}
@@ -121,4 +125,60 @@ $(document).ready(function() {
 	$(".section h4").click(function() {
 		$(this).parent().toggleClass("hidden-section");
 	});
+
+	/*
+		TOOLTIP TEXTS
+	*/
+	var tooltips = {
+		// id : [text, custom?, title],
+		"code-title": ["Raw code of the current model"],
+		"structure-title": ["Object element structure"],
+		"refresh-model": ["Update model from code"],
+		"auto-refresh": ["Toggle to refresh the <br/>model automatically"],
+		"copy-model": ["Copy JSON to clipboard"]
+	}
+
+	var active_tooltip = false;
+
+	create_tooltip = function(text, custom=false, title=null) {
+		if (active_tooltip) { return; }
+		$("#tooltip").removeClass("hidden");
+
+		$("#tooltip").append(
+			(title != null ? "<h4>" + title + "</h4>" : "")
+			+ (custom ? text : "<p>" + text + "</p>")
+		);
+
+		$(document).mousemove(function(e) {
+			$("#tooltip").css("top", e.pageY + 16);
+			$("#tooltip").css("left", e.pageX + 16);
+		});
+
+		active_tooltip = true;
+	}
+
+	clear_tooltip = function() {
+		if (!active_tooltip) { return; }
+
+		$("#tooltip").children().remove();
+		$("#tooltip").addClass("hidden");
+
+		$(document).unbind("mousemove");
+
+		active_tooltip = false;
+	}
+
+	// set tooltips
+	for (key in tooltips) {
+		$("#" + key).hover(function() {
+			info = tooltips[$(this).attr("id")];
+			if (info.length > 2) {
+				create_tooltip(info[0], info[1], info[2]);
+			} else if (info.length > 1) {
+				create_tooltip(into[0], info[1]);
+			} else {
+				create_tooltip(info[0]);
+			}
+		}, clear_tooltip);
+	}
 });
