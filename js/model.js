@@ -91,6 +91,7 @@ var Model = function(json, child=null) {
 	*/
 	this.build_structure = function() {
 		var section = $("#structure");
+		section.append("dog");
 	}
 
 	/*
@@ -223,7 +224,6 @@ var Element = function(model, node) {
 			new THREE.BoxGeometry(size.x + 0.5, size.y + 0.5, size.z + 0.5),
 			new THREE.MeshLambertMaterial({color: shades.mid, wireframe: false, transparent: true})
 		);
-		console.log(shades);
 
 		this.outline.position.set(midpoint.x, midpoint.y, midpoint.z);
 		this.outline.material.opacity = 0.2;

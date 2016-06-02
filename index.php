@@ -14,6 +14,13 @@
 		<script src="js/lib/js.cookie.js"></script>
 		<script src="js/lib/three.js"></script>
 		<script src="js/lib/OrbitControls.js"></script>
+		
+		<script src="js/lib/SSAOShader.js"></script>
+		<script src="js/lib/CopyShader.js"></script>
+		<script src="js/lib/EffectComposer.js"></script>
+		<script src="js/lib/RenderPass.js"></script>
+		<script src="js/lib/ShaderPass.js"></script>
+		<script src="js/lib/MaskPass.js"></script>
 
 		<script src="js/model.js"></script>
 		<script src="js/render.js"></script>

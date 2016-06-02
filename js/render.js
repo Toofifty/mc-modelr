@@ -8,6 +8,13 @@ var shades;
 $(document).ready(function() {
 	var stop_hover = false;
 
+	// THREE.js variables
+	var scene, camera, raycaster, controls, renderer;
+
+	// postprocessing
+	var pp_enabled = false;
+	var depth_material, effect_composer, depth_render_target, ssao_pass;
+
 	/*
 		Update the model with JSON that is stored in the
 		#code-text textarea element.
@@ -59,16 +66,112 @@ $(document).ready(function() {
 		model.on_hover(intersects);
 	}
 
+	var init = function() {
+		scene = new THREE.Scene();
+		camera = new THREE.PerspectiveCamera(75, canvas.innerWidth() / canvas.innerHeight(), 0.1, 1000);
+		raycaster = new THREE.Raycaster();
+		camera.position.set(8, 8, 80);
+
+		controls = new THREE.OrbitControls(camera, canvas.get(0));
+
+		renderer = new THREE.WebGLRenderer({antialias: true});
+		renderer.setSize(canvas.innerWidth(), canvas.innerHeight());
+		renderer.setClearColor(shades.darkest);
+		canvas.append(renderer.domElement);
+
+		// rendering lights
+		var light = new THREE.DirectionalLight("#FFF", 0.7);
+		var hemi = new THREE.HemisphereLight("#FFF", "#AAA", 1);
+		light.position.set(16, 16, 16);
+		hemi.position.set(0, 500, 0);
+		scene.add(light);
+		scene.add(hemi);
+
+		// dense (16x16) wireframe for underneath the model
+		// specifies the default resolution
+		var dense_wireframe = new THREE.Mesh(
+			new THREE.PlaneGeometry(16, 16, 16, 16),
+			new THREE.MeshBasicMaterial({
+				color: shades.lightest, wireframe: true
+			})
+		);
+		dense_wireframe.rotation.x = -Math.PI / 2;
+		dense_wireframe.position.set(8, -0.01, 8);
+		scene.add(dense_wireframe);
+
+		// sparse (5x5) wireframe for under and around the model
+		// specifies minecraft block sizes
+		var sparse_wireframe = new THREE.Mesh(
+			new THREE.PlaneGeometry(80, 80, 5, 5),
+			new THREE.MeshBasicMaterial({
+				color: shades.light, wireframe: true
+			})
+		);
+		sparse_wireframe.rotation.x = -Math.PI / 2;
+		sparse_wireframe.position.set(8, -0.01, 8);
+		scene.add(sparse_wireframe);
+	}
+
+	var init_postprocessing = function() {
+		var render_pass = new THREE.RenderPass(scene, camera);
+
+		depth_material = new THREE.MeshDepthMaterial();
+		depth_material.depthPacking = THREE.RGBADepthPacking;
+		depth_material.blending = THREE.NoBlending;
+
+		depth_render_target = new THREE.WebGLRenderTarget(
+			canvas.innerWidth(), canvas.innerHeight(),
+			{minFilter: THREE.LinearFilter, magFilter: THREE.LinearFilter, antialias: true}
+		);
+
+		// setup SSAO pass
+		ssao_pass = new THREE.ShaderPass(THREE.SSAOShader);
+		ssao_pass.renderToScreen = true;
+
+		ssao_pass.uniforms["tDepth"].value = depth_render_target.texture;
+		ssao_pass.uniforms["size"].value.set(canvas.innerWidth(), canvas.innerHeight());
+		ssao_pass.uniforms["cameraNear"].value = camera.near;
+		ssao_pass.uniforms["cameraFar"].value = camera.far;
+		ssao_pass.uniforms["onlyAO"].value = 0;
+		ssao_pass.uniforms["aoClamp"].value = 0.5;
+		ssao_pass.uniforms["lumInfluence"].value = 0.9;
+
+		effect_composer = new THREE.EffectComposer(renderer);
+		effect_composer.addPass(render_pass);
+		effect_composer.addPass(ssao_pass);
+	}
+
+	var on_resize = function() {
+		var width = canvas.innerWidth();
+		var height = canvas.innerHeight();
+
+		camera.aspect = width / height;
+		camera.updateProjectionMatrix();
+		renderer.setSize(width, height);
+	}
+
 	/*
 		Render the entire scene each frame
 	*/
 	var render = function() {
 		requestAnimationFrame(render);
+
+		// try to update model
+		// will render even without this
 		if (model != null) {
 			model.render(scene);
 			get_hover();
 		}
-		renderer.render(scene, camera);
+
+		if (pp_enabled) {
+			scene.overrideMaterial = depth_material;
+			renderer.render(scene, camera, depth_render_target, true);
+
+			scene.overrideMaterial = null;
+			effect_composer.render();
+		} else {
+			renderer.render(scene, camera);
+		}
 	}
 
 	// global shades
@@ -85,51 +188,8 @@ $(document).ready(function() {
 	// canvas to bind renderer to
 	var canvas = $("#canvas");
 
-	// THREE.js vars
-	var scene = new THREE.Scene();
-	var camera = new THREE.PerspectiveCamera(75, canvas.innerWidth() / canvas.innerHeight(), 0.1, 1000);
-	var raycaster = new THREE.Raycaster();
-	camera.position.set(8, 8, 80);
-
-	var controls = new THREE.OrbitControls(camera, canvas.get(0));
-
-	var renderer = new THREE.WebGLRenderer();
-	renderer.setSize(canvas.innerWidth(), canvas.innerHeight());
-	renderer.setClearColor(shades.darkest);
-	canvas.append(renderer.domElement);
-
-	// rendering lights
-	var light = new THREE.DirectionalLight("#FFF", 0.7);
-	var hemi = new THREE.HemisphereLight("#FFF", "#AAA", 1);
-	light.position.set(16, 16, 16);
-	hemi.position.set(0, 500, 0);
-	scene.add(light);
-	scene.add(hemi);
-
-	// dense (16x16) wireframe for underneath the model
-	// specifies the default resolution
-	var dense_wireframe = new THREE.Mesh(
-		new THREE.PlaneGeometry(16, 16, 16, 16),
-		new THREE.MeshBasicMaterial({
-			color: shades.lightest, wireframe: true
-		})
-	);
-	dense_wireframe.rotation.x = -Math.PI / 2;
-	dense_wireframe.position.set(8, -0.01, 8);
-	scene.add(dense_wireframe);
-
-	// sparse (5x5) wireframe for under and around the model
-	// specifies minecraft block sizes
-	var sparse_wireframe = new THREE.Mesh(
-		new THREE.PlaneGeometry(80, 80, 5, 5),
-		new THREE.MeshBasicMaterial({
-			color: shades.light, wireframe: true
-		})
-	);
-	sparse_wireframe.rotation.x = -Math.PI / 2;
-	sparse_wireframe.position.set(8, -0.01, 8);
-	scene.add(sparse_wireframe);
-
+	init();
+	init_postprocessing();
 	render();
 
 	// update the mouse vector for hover information
@@ -143,6 +203,11 @@ $(document).ready(function() {
 		if (e.keyCode == 219) {
 			stop_hover = !stop_hover;
 			console.log("toggle stop_hover");
+		} else if (e.keyCode == 80) {
+			pp_enabled = !pp_enabled;
+			console.log("toggle pp_enabled");
 		}
 	});
+
+	$(window).on("resize", on_resize);
 });
