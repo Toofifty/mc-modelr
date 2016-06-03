@@ -4,6 +4,7 @@
 
 var update_model;
 var shades;
+var pp_enabled;
 
 $(document).ready(function() {
 	var stop_hover = false;
@@ -12,7 +13,7 @@ $(document).ready(function() {
 	var scene, camera, raycaster, controls, renderer;
 
 	// postprocessing
-	var pp_enabled = false;
+	pp_enabled = false;
 	var depth_material, effect_composer, depth_render_target, ssao_pass;
 
 	/*
@@ -38,6 +39,8 @@ $(document).ready(function() {
 		// remove old model from scene
 		remove_model(model);
 		model = new Model(JSON.parse(json));
+
+		model.build_structure();
 	}
 
 	/*
@@ -60,7 +63,7 @@ $(document).ready(function() {
 		and send the list to the model to handle hover events.
 	*/
 	var get_hover = function() {
-		if (stop_hover) { return; }
+		if (stop_hover) return;
 		raycaster.setFromCamera(mouse, camera);
 		var intersects = raycaster.intersectObjects(scene.children);
 		model.on_hover(intersects);
@@ -73,6 +76,7 @@ $(document).ready(function() {
 		camera.position.set(8, 8, 80);
 
 		controls = new THREE.OrbitControls(camera, canvas.get(0));
+		controls.noKeys = true;
 
 		renderer = new THREE.WebGLRenderer({antialias: true});
 		renderer.setSize(canvas.innerWidth(), canvas.innerHeight());

@@ -1,3 +1,6 @@
+/*
+	Model prototype
+*/
 var Model = function(json, child=null) {
 	/*
 		Load the parent model
@@ -19,6 +22,10 @@ var Model = function(json, child=null) {
 	*/
 	this.load_model = function(node) {
 		console.log("Building model...");
+
+		this.name = node.__name ? node.__name : 
+			(node.__comment ? node.__comment : "null");
+
 		// recursively load all parents, right to the top
 		if (node.parent !== undefined && node.parent != "") {
 			this.parent_str = node.parent;
@@ -37,7 +44,7 @@ var Model = function(json, child=null) {
 		// build elements
 		if (node.elements !== undefined && len(node.elements)) {
 			for (index in node.elements) {
-				this.elements.push(new Element(this, node.elements[index]));
+				this.elements[index] = new Element(this, node.elements[index], index);
 			}
 		}
 		console.log("Model built successfully.");
@@ -87,11 +94,138 @@ var Model = function(json, child=null) {
 	}
 
 	/*
+		Get the lowest free element id
+	*/
+	this.free_id = function() {
+		var id = 0;
+		while (this.elements[id]) {
+			id++;
+		}
+		return id;
+	}
+
+	/*
 		Build HTML into the #structure element
 	*/
 	this.build_structure = function() {
-		var section = $("#structure");
-		section.append("dog");
+		var section = $("#structure > .content");
+		// ensure element is clear
+		section.children().remove();
+
+		section.append("<ul id='model-structure'></ul>");
+		var model_header = $("#model-structure");
+
+		// AMBIENT OCCLUSION
+
+		model_header.append(
+			  	"<li>"
+			+		"<div class='structure-header'>"
+			+			"<p>Ambient Occlusion</p>"
+			+			"<input id='ao-toggle' type='checkbox'/>"
+			+		"</div>"
+			+ 	"</li>"
+		);
+
+		$("#ao-toggle").click(function() {
+			console.log($(this));
+			pp_enabled = !pp_enabled;
+		});
+
+		// TEXTURES
+
+		// append texture header and list
+		model_header.append(
+			  	"<li>"
+			+ 		"<div id='texture-header' class='structure-header'>"
+			+ 			"<p>Textures</p>" 
+			+ 			html_icon("icon-down", "", "toggle-icon")
+			+ 		"</div>"
+			+		"<ul id='texture-structure' class='collapsed'></ul>"
+			+ 	"</li>"
+		);
+
+		// set toggle function
+		$("#texture-header").click(function() {
+			if ($(this).attr("isopen") == "true") {
+				$(this).attr("isopen", "false");
+				$("#texture-structure").addClass("collapsed");
+			} else {
+				$(this).attr("isopen", "true");
+				$("#texture-structure").removeClass("collapsed");
+			}
+		});
+
+		// get texture ul
+		var texture_list = $("#texture-structure");
+
+		// create a HTML texture list entry
+		var texture_info = function(key, val, rem=true) {
+			return  "<li>"
+				+		"<div class='texture-info'>"
+				+ 			html_icon("minus", "remove-texture", "action button")
+				+ 			"<p id='" + key + "-t-key' class='key'>" 
+				+ 				key 
+				+ 			"</p>"
+				+			"<input id='" +key+ "-t-tex' type='text' value='" +val+ "'/>"
+				+		"</div>"
+				+ 	"</li>";
+		}
+
+		for (key in this.texture_dict) {
+			texture_list.append(texture_info(key, this.texture_dict[key]));
+		}
+
+		// add an empty list entry for adding items
+		texture_list.append(
+				"<li>"
+			+		"<div class='texture-info'>"
+			+ 			html_icon("plus", "add-texture", "action button")
+			+ 			"<input id='t-key-new' type='text' class='key' placeholder='texture key'>"
+			+ 			"<input id='t-tex-new' placeholder='texture location' type='text'>" 
+			+		"</div>"
+			+ 	"</li>"
+		);
+
+		// ELEMENTS
+
+		// append element header and list
+		model_header.append(
+				"<li>"
+			+		"<div id='elements-header' class='structure-header'>"
+			+			"<p>Elements</p>"
+			+ 			html_icon("icon-down", "", "toggle-icon")
+			+ 		"</div>"
+			+ 		"<ul id='elements-structure' class='collapsed'></ul>"
+			+	"</li>"
+		);
+
+		// set toggle function
+		$("#elements-header").click(function() {
+			if ($(this).attr("isopen") == "true") {
+				$(this).attr("isopen", "false");
+				$("#elements-structure").addClass("collapsed");
+			} else {
+				$(this).attr("isopen", "true");
+				$("#elements-structure").removeClass("collapsed");
+			}
+		});
+
+		var element_header = $("#elements-structure");
+
+		for (i in this.elements) {
+			this.elements[i].build_structure(element_header);
+		}
+
+		// empty element adder
+		element_header.append(
+				"<li>"
+			+		"<div id='elem-new-header' class='element-header'>"
+			+ 			html_icon("plus", "add-elem", "action-double button") 
+			+			"<p class='element-header-id'>" + this.free_id() + "</p>"
+			+ 			"<input type='text' placeholder='new element'/>"
+			+		"</div>"
+			+	"</li>"
+		);
 	}
 
 	/*
@@ -128,6 +262,8 @@ var Model = function(json, child=null) {
 	// a reference to this object
 	var self = this;
 
+	this.name = "null";
+
 	// inheritance
 	this.parent_str;
 	this.parent = null;
@@ -142,7 +278,7 @@ var Model = function(json, child=null) {
 	this.texture_atlas;
 
 	// elements
-	this.elements = [];
+	this.elements = {};
 
 	this.hover_element = null;
 
@@ -155,7 +291,7 @@ var Model = function(json, child=null) {
 /*
 	An element of the model
 */
-var Element = function(model, node) {
+var Element = function(model, node, id=-1) {
 	/*
 		Build this element from a JSON node
 	*/
@@ -268,6 +404,94 @@ var Element = function(model, node) {
 	}
 
 	/*
+		Build the structure hierarchy of this element into
+		the header DOM element
+	*/
+	this.build_structure = function(ul) {
+		// NAME
+		ul.append(
+				"<li>" 
+			+		"<div id='elem-" +this.id+ "-header' class='element-header'>"
+			+ 			html_icon("pencil", "elem-" + this.id + "-edit", "action button") 
+			+ 			html_icon("minus", "elem-" + this.id + "-remove", "action-notleft button")
+			+			"<p class='element-header-id'>" + this.id + "</p>"
+			+ 			"<p class='element-header-name'>" + this.name + "</p>"
+			+ 			html_icon("icon-down", "elem-" + this.id + "-toggle", "toggle-icon")
+			+		"</div>"
+			+		"<ul id='elem-" +this.id+ "-structure' class='element-structure collapsed'></ul>"
+			+ 	"</li>"
+		);
+
+		// add element toggle
+		$("#elem-" + this.id + "-header").click(function() {
+			if ($(this).attr("isopen") == "true") {
+				$(this).attr("isopen", "false");
+				$("#elem-" + self.id + "-structure").addClass("collapsed");
+			} else {
+				$(this).attr("isopen", "true");
+				$("#elem-" + self.id + "-structure").removeClass("collapsed");
+			}
+		});
+
+		// get elem structure
+		var element_structure = $("#elem-" + this.id + "-structure");
+
+		// bounds
+		element_structure.append(
+				"<li>"
+			//+		html_icon("pencil", "elem-" + this.id + "-bounds-edit", "action button")
+			+		"<p class='element-key'>Bounds</p>"
+			+		"<div class='element-values'>"
+			+			"<input type='number' value='" + this.from.x + "'>"
+			+			"<input type='number' value='" + this.from.y + "'>"
+			+			"<input type='number' value='" + this.from.z + "' style='margin-right:0'>"
+			+			"<p class='element-key' style='text-align:center;width:6%'>to</p>"
+			+			"<input type='number' value='" + this.to.x + "'>"
+			+			"<input type='number' value='" + this.to.y + "'>"
+			+			"<input type='number' value='" + this.to.z + "'>"
+			+		"</div>"
+			+	"</li>"
+		);
+
+		// shade
+		element_structure.append(
+				"<li>"
+			+		"<p class='element-key'>Shade</p>"
+			//+		"<div class='element-values'>"
+			+			"<input type='checkbox' value='" + this.shade + "'>"
+			//+		"</div>"
+			+	"</li>"
+		);
+
+		// rotation
+		if (this.angle == 0) {
+			element_structure.append(
+					"<li>"
+				+		html_icon("plus", "elem-" + this.id + "-add-rotate", "action button-disabled")
+				+		"<p class='element-key'>Rotation</p>"
+				+	"</li>"
+			);
+		}
+
+		// faces
+		element_structure.append(
+				"<li>"
+			+		"<div id='elem-" + this.id + "-faces-header'>"
+			+			"<p class='element-key'>Faces</p>"
+			+			html_icon("down", "elem-" + this.id + "-faces-toggle", "toggle-icon")
+			+		"</div>"
+			+		"<ul id='elem-" + this.id + "-faces'></ul>"
+			+	"</li>"
+		);
+
+		var face_structure = $("#elem-" + this.id + "-faces");
+
+		for (dir in this.faces) {
+			this.faces[dir].build_structure(face_structure, dir);
+		}
+	}
+
+	/*
 		Build a JSON object from the current element,
 		applying face data
 	*/
@@ -312,12 +536,14 @@ var Element = function(model, node) {
 	// reference to the model this element belongs to
 	this.model = model;
 
+	this.id = id;
+
 	// element bounds
 	this.from = null;
 	this.to = null;
 
 	// rotations
-	this.origin = new Vector(0, 0, 0);
+	this.origin = new Vector(8, 8, 8);
 	this.axis = null;
 	this.angle = 0;
 	this.rescale = false;
@@ -341,6 +567,9 @@ var Element = function(model, node) {
 	this.load_element(node);
 }
 
+/*
+	A single face on an element
+*/
 var Face = function(element, node) {
 	/*
 		Build this face from a JSON node
@@ -361,6 +590,25 @@ var Face = function(element, node) {
 			// remove the first char (#) from the texture string
 			this.texture_str = node.texture.slice(1);
 		}
+	}
+
+	/*
+		Build structure information into the DOM element
+	*/
+	this.build_structure = function(ul, dir) {
+		var id = "face-" + this.element.id + "-" + dirs[dir];
+
+		ul.append(
+				"<li>" 
+			+		"<div id='" +id+ "-header' class='element-header'>"
+			+ 			html_icon("pencil", "elem-" + this.id + "-edit", "action button") 
+			+ 			html_icon("minus", "elem-" + this.id + "-remove", "action-notleft button")
+			+ 			"<p class='element-key'>" + dirs[dir] + "</p>"
+			+ 			html_icon("icon-down", "elem-" + this.id + "-toggle", "toggle-icon")
+			+		"</div>"
+			+		"<ul id='elem-" +this.id+ "-structure' class='element-structure collapsed'></ul>"
+			+ 	"</li>"
+		);
 	}
 
 	/*

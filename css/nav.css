@@ -12,17 +12,17 @@ html, body {
   width: 10px; }
 
 ::-webkit-scrollbar-track {
-  background: #5A5050; }
+  background: #547A82; }
 
 ::-webkit-scrollbar-thumb {
-  background: #547A82;
+  background: #3EACA8;
   border-radius: 5px;
-  border: 3px solid #5A5050;
+  border: 3px solid #547A82;
   transition: 0.5s; }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #3EACA8;
-  border: 2px solid #5A5050; }
+  background: #A2D4AB;
+  border: 2px solid #547A82; }
 
 ::-webkit-scrollbar-corner {
   background: #E5EEC1; }
@@ -87,8 +87,8 @@ html, body {
   .header #slim-toggle {
     vertical-align: middle;
     fill: #FFF;
-    width: 28px;
-    height: 28px;
+    width: 20px;
+    height: 20px;
     padding: 5px;
     transition: 0.5s; }
   .header #slim-toggle:hover {
@@ -99,7 +99,7 @@ html, body {
   margin: 0px;
   height: 30px; }
   .slim-header h2 {
-    font-size: 0.8em; }
+    font-size: 1em; }
   .slim-header .left, .slim-header .right {
     padding: 0px;
     width: 50%; }
@@ -114,8 +114,6 @@ html, body {
   .slim-header .theme {
     display: none; }
   .slim-header #slim-toggle {
-    height: 20px;
-    width: 20px;
     transform: rotate(180deg); }
 
 .shade {
@@ -140,5 +138,11 @@ html, body {
 
 .shade-5 {
   background: #5A5050; }
+
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  fill: currentColor; }
 
 /*# sourceMappingURL=nav.css.map */

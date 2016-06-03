@@ -35,9 +35,9 @@ $invisible: rgba(0, 0, 0, 0);
 		background: $shade-5;
 		border: 1px solid $shade-4;
 		//width: 20%;
-		max-width: 40%;
+		max-width: 45%;
 		min-width: 200px;
-		height: 100%;
+		height: calc(100% - 50px);
 
 		box-shadow: 0px 0px 10px $soft-shadow;
 		transition: 0.5s;
@@ -47,7 +47,7 @@ $invisible: rgba(0, 0, 0, 0);
 			width: calc(100% - 30px);
 			padding: 10px;
 
-			overflow: hidden;
+			overflow-y: scroll;
 		}
 
 		#control-resize {
@@ -55,8 +55,6 @@ $invisible: rgba(0, 0, 0, 0);
 			//transform: rotate();
 			//background: $shade-3;
 			padding: 5px;
-			width: 20px;
-			height: 20px;
 			bottom: 50px;
 			right: -25px;
 			transform: rotate(270deg);
@@ -77,20 +75,20 @@ $invisible: rgba(0, 0, 0, 0);
 
 	#code-panel {
 		@extend #control-panel;
+		min-width: 375px;
 		right: 0px;
 
 		#code-container {
 			display: inline-block;
 			width: calc(100% - 20px);
+			height: 100%;
 			padding: 10px;
-			overflow: hidden;
+			overflow: scroll;
 		}
 
 		#code-resize {
 			position: absolute;
 			padding: 5px;
-			width: 20px;
-			height: 20px;
 			bottom: 50px;
 			left: -25px;
 			transform: rotate(90deg);
@@ -120,6 +118,10 @@ $invisible: rgba(0, 0, 0, 0);
 	#control-resize, #code-resize {
 		bottom: 30px !important;
 	}
+
+	#canvas {
+		height: calc(100vh - 30px) !important;
+	}
 }
 
 .section {
@@ -137,6 +139,9 @@ $invisible: rgba(0, 0, 0, 0);
 		background: $shade-4;
 		border-bottom: 1px solid $shade-4;
 		text-shadow: 2px 2px 0px $softer-shadow;
+
+		text-transform: uppercase;
+		font-size: 0.8em;
 	}
 
 	.content {
@@ -144,7 +149,6 @@ $invisible: rgba(0, 0, 0, 0);
 		width: 100%;
 		background: $shade-5;
 		border-radius: 5px;
-		box-shadow: inset 5px 5px 0px $softer-shadow;
 		transition: 0.5s;
 	}
 
@@ -189,9 +193,7 @@ $invisible: rgba(0, 0, 0, 0);
 		text-align: center;
 		display: inline-block;
 		width: calc(33.33333% - 10px);
-		background: $shade-4;
 		margin: 0px;
-		transition: 0.5s;
 		padding: 5px;
 		//border-radius: 5px;
 
@@ -199,10 +201,6 @@ $invisible: rgba(0, 0, 0, 0);
 			height: 20px;
 			fill: #FFF;
 		}
-	}
-
-	li:hover {
-		background: $shade-3;
 	}
 
 	.disabled {
@@ -222,10 +220,11 @@ $invisible: rgba(0, 0, 0, 0);
 	left: 0;
 	background: $shade-5;
 	border: 1px solid $shade-4;
-	box-shadow: 5px 5px 0px $softer-shadow;
+	box-shadow: 2px 2px 0px $softer-shadow;
 	color: #FFF;
 	padding: 5px;
 	overflow: hidden;
+	z-index: 99;
 
 	h4 {
 		text-align: center;
@@ -235,6 +234,7 @@ $invisible: rgba(0, 0, 0, 0);
 	}
 
 	p {
+		text-align: center;
 		margin: 0px;
 		padding: 5px;
 		font-size: 0.8em;
@@ -254,4 +254,257 @@ $invisible: rgba(0, 0, 0, 0);
 		width: 100%;
 		height: 100%;
 	}
+}
+
+#structure {
+
+	.content {
+		ul {
+			list-style-type: none;
+			display: block;
+			padding: 0px;
+			margin: 0px;
+
+			li {
+				width: 100%;
+				padding: 0px;
+				//background: $shade-4;
+				border-bottom: 1px solid $shade-4;
+
+				p {
+					margin: 0px;
+					display: inline-block;
+				}
+
+				input[type="checkbox"] {
+					float: right;
+					vertical-align: middle;
+				}
+
+				.structure-header {
+					padding: 5px;
+
+					.toggle-icon {
+						fill: #FFF;
+						height: 20px;
+						width: 20px;
+						vertical-align: middle;
+						float: right;
+						transform: rotate(180deg);
+						transition: 0.5s;
+					}
+				}
+
+				.structure-header:hover {
+					background: $shade-4;
+
+					.toggle-icon {
+						fill: $shade-3;
+					}
+				}
+
+				.structure-header[isopen="true"] {
+					//box-shadow: 0px 5px 10px $softer-shadow;
+					border-bottom: 1px solid $shade-3;
+
+					.toggle-icon {
+						transform: rotate(0deg);
+					}
+				}
+
+				ul {
+					padding: 5px;
+					width: calc(100% - 10px);
+
+					li {
+						box-sizing: border-box;
+						margin: 0px;
+						padding: 0px;
+						//border: 1px solid $shade-4;
+						border: none;
+						margin-top: 2px;
+						border-radius: 5px;
+						box-shadow: 1px 1px 0px $softer-shadow;
+						min-height: 23px;
+
+						.toggle-icon {
+							vertical-align: middle;
+							float: right;
+							padding: 3.5px;
+							transform: rotate(180deg);
+							transition: 0.5s;
+						}
+
+						.texture-info {
+							border-radius: 5px;
+						}
+
+						.texture-info:hover {
+							background: $shade-4;
+						}
+
+						.element-header {
+							border-radius: 5px;
+						}
+
+						.element-header:hover {
+							background: $shade-4;
+
+							.toggle-icon {
+								fill: $shade-3;
+							}
+						}
+
+						.element-header[isopen="true"] {
+							border-bottom: 1px solid $shade-3;
+							border-radius: 5px 5px 0px 0px;
+
+							.action {
+								border-radius: 5px 0px 0px 0px;
+							}
+
+							.action-notleft {
+								border-radius: 0px;
+							}
+
+							.toggle-icon {
+								transform: rotate(0deg);
+							}
+						}
+
+						.element-structure {
+							border-radius: 0px 0px 5px 5px;
+							border: 1px solid $shade-4;
+							overflow: hidden;
+							font-size: 0.8em;
+							width: calc(100% - 12px);
+
+							li:hover {
+								background: $shade-4;
+							}
+
+							.element-values {
+								text-align: right;
+								width: 80%;//calc(80% - 22px);
+								display: inline-block;
+							}
+
+							input[type="number"] {
+								padding: 3px;
+								vertical-align: middle;
+								width: 27px;
+								color: #FFF;
+								background: $shade-5;
+								border: none;
+								border-bottom: 1px solid $shade-4;
+								border-radius: 4px;
+								margin-right: 3px;
+								text-align: center;
+							}
+
+							input[type="number"]:hover {
+								border-bottom: 1px solid $shade-3;
+							}
+
+							input[type="checkbox"] {
+								margin: 5px;
+							}
+						}
+
+						.element-key {
+							vertical-align: middle;
+							width: calc(20% - 7px);
+							padding: 3.5px;
+						}
+					}
+
+					input[type="text"] {
+						vertical-align: middle;
+						padding: 3px;
+						margin: 1px;
+						background: $shade-5;
+						border: none;
+						border-bottom: 1px solid $shade-4;
+						color: #FFF;
+						font-family: "Monaco", monospace;
+						width: calc(75% - 27px);
+						//box-shadow: inset 2px 2px 0px $softer-shadow;
+						font-size: 0.6em;
+						border-radius: 4px;
+					}
+
+					input[type="text"]:hover {
+						border-bottom: 1px solid $shade-3;
+					}
+
+					input[type="text"]:active {
+						border-bottom: 1px solid $shade-2;
+					}
+
+					.key {
+						vertical-align: middle;
+						padding: 3.5px;
+						width: calc(25% - 12px) !important;
+						font-size: 0.8em;
+					}
+
+					[class^="element-header-"] {
+						vertical-align: middle;
+						padding: 3.5px;
+						font-size: 0.8em;
+					}
+
+					.element-header-id {
+						text-align: center;
+						width: 20px;
+					}
+
+					.action {
+						vertical-align: middle;
+						padding: 5px;
+						border-radius: 5px 0px 0px 5px;
+						height: 13px;
+						width: 12px;
+						overflow: visible;
+					}
+
+					.action-notleft {
+						@extend .action;
+						border-radius: 0px;
+					}
+
+					.action-double {
+						@extend .action;
+						width: 34px;
+					}
+				}
+			}
+		}
+	}
+
+	.collapsed {
+		height: 0px;
+		padding: 0px !important;
+		overflow: hidden !important;
+		box-shadow: none;
+		border: none !important;
+	}
+}
+
+.button {
+	background: $shade-4;
+	transition: 0.1s;
+}
+
+.button:hover {
+	background: $shade-3;
+}
+
+.button:active {
+	background: $shade-2;
+}
+
+.button-disabled {
+	background: $shade-4;
+	fill: $shade-5;
 }

@@ -52,6 +52,7 @@ $(document).ready(function() {
 	/* load text from cookies */
 	var json = Cookies.get("json-text");
 	$("#code-text").val(json ? json : JSON.stringify(sack_json, null, 4));
+	update_model();
 
 	// $("#code-text").keyup(function(e) {
 	// 	update_model();

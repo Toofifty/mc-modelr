@@ -100,3 +100,13 @@ var load_model_image = function(key) {
 	}
 	return THREE.ImageUtils.loadTexture(path);
 }
+
+
+var html_icon = function(icon, id, clazz="") {
+	if (icon.indexOf("icon-") == -1) {
+		icon = "icon-" + icon;
+	}
+	return "<svg id='" + id + "' class='icon " + clazz + "'>"
+		 +     "<use xlink:href='icons.svg#" + icon + "'></use>"
+		 + "</svg>";
+}

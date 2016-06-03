@@ -28,7 +28,7 @@ $(document).ready(function() {
 	// On mousedown, begin dragging the control panel
 	$("#control-resize").mousedown(function(e) {
 		// don't drag if the panel is hidden
-		if ($(this).hasClass("hidden")) { return; }
+		if ($(this).hasClass("hidden")) return;
 		e.preventDefault();
 		drag = true;
 		// remove transition
@@ -43,7 +43,7 @@ $(document).ready(function() {
 	});
 
 	$("#code-resize").mousedown(function(e) {
-		if ($(this).hasClass("hidden")) { return; }
+		if ($(this).hasClass("hidden")) return;
 		e.preventDefault();
 		drag = true;
 		$("#code-panel").css("transition", "none");
@@ -134,14 +134,15 @@ $(document).ready(function() {
 		"code-title": ["Raw code of the current model"],
 		"structure-title": ["Object element structure"],
 		"refresh-model": ["Update model from code"],
-		"auto-refresh": ["Toggle to refresh the <br/>model automatically"],
-		"copy-model": ["Copy JSON to clipboard"]
+		"auto-refresh": ["Toggle to refresh the model automatically"],
+		"copy-model": ["Copy JSON to clipboard"],
+		"theme-select": ["Select theme <br/>(refreshes the page)"]
 	}
 
 	var active_tooltip = false;
 
 	create_tooltip = function(text, custom=false, title=null) {
-		if (active_tooltip) { return; }
+		if (active_tooltip) return;
 		$("#tooltip").removeClass("hidden");
 
 		$("#tooltip").append(
@@ -158,7 +159,7 @@ $(document).ready(function() {
 	}
 
 	clear_tooltip = function() {
-		if (!active_tooltip) { return; }
+		if (!active_tooltip) return;
 
 		$("#tooltip").children().remove();
 		$("#tooltip").addClass("hidden");
