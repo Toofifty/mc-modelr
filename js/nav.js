@@ -6,13 +6,13 @@ $(document).ready(function() {
 
 	if (Cookies.get("slim-header") == "true") {
 		$("#header").addClass("slim-header");
-		$("#app").addClass("slim-app");
+		$("#app").addClass("app-slim");
 	}
 
 	/* toggle slim header */
 	$("#slim-toggle").click(function() {
 		$("#header").toggleClass("slim-header");
-		$("#app").toggleClass("slim-app");
+		$("#app").toggleClass("app-slim");
 
 		Cookies.set("slim-header", $("#header").hasClass("slim-header"));
 	});

@@ -1,0 +1,73 @@
+$global-font: 'Lato', sans-serif;
+// "chill" shade set
+$shade-1: #E5EEC1;
+$shade-2: #A2D4AB;
+$shade-3: #3EACA8;
+$shade-4: #547A82;
+$shade-5: #5A5050;
+// box and text shadows
+$soft-shadow: rgba(0, 0, 0, 0.4);
+$softer-shadow: rgba(0, 0, 0, 0.2);
+$invisible: rgba(0, 0, 0, 0);
+
+// END GLOBALS
+
+#model-structure {
+
+	/* generic ul and li */
+	ul {
+		display: block;
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+
+		li {
+			border-bottom: 1px solid $shade-4;
+			padding: 0;
+			width: 100%;
+		
+		}
+	}
+
+	/* action buttons */
+	.action {
+		border-radius: 5px 0 0 5px;
+		height: 18px;
+		overflow: visible;
+		padding: 5px;
+		vertical-align: middle;
+		width: 17px;
+	}
+
+	/* top level headers (AO, textures, elements) */
+	.top-level-header {
+		padding: 5px;
+
+		/* header text */
+		p {
+			display: inline-block;
+			margin: 0;
+		}
+
+		/* icon to toggle section collapse */
+		.toggle-collapse {
+			float: right;
+			transform: rotate(180deg);
+			transition: 0.5s;
+			vertical-align: middle;
+		}
+	}
+
+	/* lower-level headers */
+	.level-header {
+		border-radius: 5px;
+	}
+
+	.level-header:hover {
+		background: $shade-4;
+	}
+
+	.level-list {
+		padding: 5px;
+	}
+}

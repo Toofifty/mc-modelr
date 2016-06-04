@@ -1,5 +1,5 @@
 /*
-	Scripts for controlling the UI/controls
+	Scripts for leftling the UI/lefts
 */
 
 // globals for utility use
@@ -13,49 +13,49 @@ $(document).ready(function() {
 
 	var drag = false;
 
-	/* resize left control panel to previous value */
-	var control_width;
-	if (control_width = Cookies.get("control-width")) {
-		$("#control-panel").css("width", control_width);
+	/* resize left left panel to previous value */
+	var left_width;
+	if (left_width = Cookies.get("left-width")) {
+		$("#left-panel").css("width", left_width);
 	}
 
-	/* resize right code panel to previous value */
-	var code_width;
-	if (code_width = Cookies.get("code-width")) {
-		$("#code-panel").css("width", code_width);
+	/* resize right right panel to previous value */
+	var right_width;
+	if (right_width = Cookies.get("right-width")) {
+		$("#right-panel").css("width", right_width);
 	}
 
-	// On mousedown, begin dragging the control panel
-	$("#control-resize").mousedown(function(e) {
+	// On mousedown, begin dragging the left panel
+	$("#left-resize").mousedown(function(e) {
 		// don't drag if the panel is hidden
 		if ($(this).hasClass("hidden")) return;
 		e.preventDefault();
 		drag = true;
 		// remove transition
-		$("#control-panel").css("transition", "none");
+		$("#left-panel").css("transition", "none");
 		$(this).addClass("dragged");
 
 		// update panel width on mousemove
 		$(document).mousemove(function(e) {
-			$("#control-panel").css("width", e.pageX);
-			Cookies.set("control-width", e.pageX);
+			$("#left-panel").css("width", e.pageX);
+			Cookies.set("left-width", e.pageX);
 		});
 	});
 
-	$("#code-resize").mousedown(function(e) {
+	$("#right-resize").mousedown(function(e) {
 		if ($(this).hasClass("hidden")) return;
 		e.preventDefault();
 		drag = true;
-		$("#code-panel").css("transition", "none");
+		$("#right-panel").css("transition", "none");
 		$(this).addClass("dragged");
 
 		$(document).mousemove(function(e) {
-			$("#code-panel").css("width", window.innerWidth - e.pageX);
-			Cookies.set("code-width", window.innerWidth - e.pageX);
+			$("#right-panel").css("width", window.innerWidth - e.pageX);
+			Cookies.set("right-width", window.innerWidth - e.pageX);
 		});
 	});
 
-	$("#code-resize").click(function(e) {
+	$("#right-resize").click(function(e) {
 		if (drag) { e.preventDefault() };
 	});
 
@@ -67,55 +67,55 @@ $(document).ready(function() {
 			drag = false;
 
 			// re-enable transitions for toggle anim
-			$("#control-panel").css("transition", "0.5s");
-			$("#code-panel").css("transition", "0.5s");
+			$("#left-panel").css("transition", "0.5s");
+			$("#right-panel").css("transition", "0.5s");
 
-			$("#control-resize").removeClass("dragged");
-			$("#code-resize").removeClass("dragged");
+			$("#left-resize").removeClass("dragged");
+			$("#right-resize").removeClass("dragged");
 		}
 	});
 
 	/*
-		TOGGLE CONTROL/CODE PANELS
+		TOGGLE left/right PANELS
 	*/
 
-	var show_control_panel = function(show) {
-		var panel = $("#control-panel");
-		var resize = $("#control-resize");
+	var show_left_panel = function(show) {
+		var panel = $("#left-panel");
+		var resize = $("#left-resize");
 		if (show) {
 			panel.css("left", "0px");
-			resize.removeClass("toggled");
+			resize.removeClass("resizer-left-toggled");
 		} else {
 			panel.css("left", "-" + panel.css("width"));
-			resize.addClass("toggled");
+			resize.addClass("resizer-left-toggled");
 		}
-		Cookies.set("control-hidden", !show);
+		Cookies.set("left-hidden", !show);
 	}
 
-	var show_code_panel = function(show) {
-		var panel = $("#code-panel");
-		var resize = $("#code-resize");
+	var show_right_panel = function(show) {
+		var panel = $("#right-panel");
+		var resize = $("#right-resize");
 		if (show) {
 			panel.css("right", "0px");
-			resize.removeClass("toggled");
+			resize.removeClass("resizer-right-toggled");
 		} else {
 			panel.css("right", "-" + panel.css("width"));
-			resize.addClass("toggled");
+			resize.addClass("resizer-right-toggled");
 		}
-		Cookies.set("code-hidden", !show);
+		Cookies.set("right-hidden", !show);
 	}
 
-	show_control_panel(Cookies.get("control-hidden") != "true");
-	show_code_panel(Cookies.get("code-hidden") != "true");
+	show_left_panel(Cookies.get("left-hidden") != "true");
+	show_right_panel(Cookies.get("right-hidden") != "true");
 
-	/* toggle right code panel */
-	$("#code-resize").click(function() {
-		show_code_panel(Cookies.get("code-hidden") == "true");
+	/* toggle right right panel */
+	$("#right-resize").click(function() {
+		show_right_panel(Cookies.get("right-hidden") == "true");
 	});
 
-	/* toggle right code panel */
-	$("#control-resize").click(function() {
-		show_control_panel(Cookies.get("control-hidden") == "true");
+	/* toggle right right panel */
+	$("#left-resize").click(function() {
+		show_left_panel(Cookies.get("left-hidden") == "true");
 	});
 
 	/*

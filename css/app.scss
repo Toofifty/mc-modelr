@@ -1,122 +1,101 @@
 @import url(https://fonts.googleapis.com/css?family=Lato);
+@import "_structure.scss";
 
 $global-font: 'Lato', sans-serif;
-
 // "chill" shade set
 $shade-1: #E5EEC1;
 $shade-2: #A2D4AB;
 $shade-3: #3EACA8;
 $shade-4: #547A82;
 $shade-5: #5A5050;
-
+// box and text shadows
 $soft-shadow: rgba(0, 0, 0, 0.4);
 $softer-shadow: rgba(0, 0, 0, 0.2);
 $invisible: rgba(0, 0, 0, 0);
+
+$headerh: 50px;
+$headerslimh: 30px;
+
+$transition-t: 0.5s;
+
+// END GLOBALS
+
+* {
+	box-sizing: border-box;
+}
 
 .hidden {
 	display: none;
 	background: #F00 !important;
 }
 
+/* div containing all functionality */
 .app {
-	display: block;
 	color: #FFF;
+	display: block;
+	float: left;
 	height: calc(100vh - 50px);
+	margin-top: $headerh;
+	transition: $transition-t;
 	width: 100%;
 
-	margin-top: 50px;
-
-	transition: 0.5s;
-
-	#control-panel {
-		position: fixed;
-		top: 50px;
-
+	/* UI side panels */
+	.side-panel {
 		background: $shade-5;
 		border: 1px solid $shade-4;
-		//width: 20%;
-		max-width: 45%;
-		min-width: 200px;
+		box-shadow: 0 0 10px $soft-shadow;
 		height: calc(100% - 50px);
-
-		box-shadow: 0px 0px 10px $soft-shadow;
-		transition: 0.5s;
-
-		#control {
-			display: inline-block;
-			width: calc(100% - 30px);
-			padding: 10px;
-
-			overflow-y: scroll;
-		}
-
-		#control-resize {
-			position: absolute;
-			//transform: rotate();
-			//background: $shade-3;
-			padding: 5px;
-			bottom: 50px;
-			right: -25px;
-			transform: rotate(270deg);
-			fill: #FFF;
-
-			transition: 0.5s;
-		}
-
-		#control-resize:hover {
-			fill: $shade-3;
-			cursor: pointer;
-		}
-
-		.toggled {
-			transform: rotate(90deg) !important;
-		}
-	}
-
-	#code-panel {
-		@extend #control-panel;
+		max-width: 45%;
 		min-width: 375px;
-		right: 0px;
+		position: absolute;
+		top: $headerh;
+		transition: $transition-t;
 
-		#code-container {
-			display: inline-block;
-			width: calc(100% - 20px);
+		/* container inside panels, used for scrolling */
+		.panel-container {
 			height: 100%;
 			padding: 10px;
-			overflow: scroll;
+			width: 100%;
 		}
 
-		#code-resize {
-			position: absolute;
-			padding: 5px;
-			bottom: 50px;
-			left: -25px;
-			transform: rotate(90deg);
+		/* resize control arrow */
+		.resizer {
+			bottom: 0;
+			cursor: col-resize;
 			fill: #FFF;
-			transition: 0.5s;
+			margin: 5px;
+			position: absolute;
 		}
 
-		#code-resize:hover {
-			fill: $shade-3;
-			cursor: pointer;
+		.resizer:hover { fill: $shade-3; }
+
+		.resizer-left {
+			right: -26px;
+			transform: rotate(270deg);
 		}
 
-		.toggled {
-			transform: rotate(270deg) !important;
+		.resizer-right {
+			left: -26px;
+			transform: rotate(90deg);
 		}
+
+		.resizer-left-toggled { transform: rotate(90deg); }
+		.resizer-right-toggled { transform: rotate(270deg); }
 	}
+
+	/* left and right panel positioning */
+	.side-panel-left { left: 0; }
+	.side-panel-right { right: 0; }
 }
 
-.slim-app {
-	margin-top: 30px;
+/* slim app sizings, to fit with slim navigation bar */
+.app-slim {
 	height: calc(100vh - 30px);
+	margin-top: $headerslimh;
 
-	#control-panel, #code-panel {
-		top: 30px;
-	}
-
-	#control-resize, #code-resize {
-		bottom: 30px !important;
+	.side-panel {
+		height: calc(100% - 30px);
+		top: $headerslimh;
 	}
 
 	#canvas {
@@ -124,27 +103,27 @@ $invisible: rgba(0, 0, 0, 0);
 	}
 }
 
+/* generic sub-panel sections */
 .section {
-
 	border: 1px solid $shade-4;
 	border-radius: 5px;
-	box-shadow: 1px 1px 0px $softer-shadow;
+	box-shadow: 1px 1px 0 $softer-shadow;
 	margin-bottom: 10px;
 	overflow-y: hidden;
 
+	/* section header */
 	h4 {
-		text-align: center;
-		padding: 5px;
-		margin: 0px;
 		background: $shade-4;
 		border-bottom: 1px solid $shade-4;
-		text-shadow: 2px 2px 0px $softer-shadow;
-
-		text-transform: uppercase;
 		font-size: 0.8em;
+		margin: 0;
+		padding: 5px;
+		text-align: center;
+		text-shadow: 2px 2px 0 $softer-shadow;
+		text-transform: uppercase;
 	}
 
-	.content {
+	.section-content {
 		color: #FFF;
 		width: 100%;
 		background: $shade-5;
@@ -164,95 +143,82 @@ $invisible: rgba(0, 0, 0, 0);
 		overflow-y: scroll;
 		transition: none;
 		color: #FFF;
-		padding: 0px;
+		padding: 0;
 	}
 }
 
 .hidden-section {
-
-	.content {
-		min-height: 0px !important;
-		height: 0px !important;
+	.section-content {
+		min-height: 0;
+		height: 0;
 		overflow: hidden;
 	}
 
 	#code-text {
-		height: 0px;
-		min-height: 0px;
+		height: 0;
+		min-height: 0;
 	}
 }
 
-.section-bottom-opts {
+.section-opts {
+	display: flex;
 	list-style: none;
-	display: inline-block;
-	padding: 0px;
-	margin: 0px;
+	margin: 0;
+	padding: 0;
 	width: 100%;
 
 	li {
 		text-align: center;
 		display: inline-block;
-		width: calc(33.33333% - 10px);
-		margin: 0px;
+		margin: 0;
 		padding: 5px;
-		//border-radius: 5px;
-
-		svg {
-			height: 20px;
-			fill: #FFF;
-		}
-	}
-
-	.disabled {
-		svg {
-			fill: $shade-5;
-		}
-	}
-
-	.disabled:hover {
-		background: $shade-4;
+		flex-grow: 1;
 	}
 }
 
+/* hover tooltip */
 #tooltip {
-	position: fixed;
-	top: 0;
-	left: 0;
 	background: $shade-5;
 	border: 1px solid $shade-4;
 	box-shadow: 2px 2px 0px $softer-shadow;
 	color: #FFF;
-	padding: 5px;
+	left: 0;
 	overflow: hidden;
+	padding: 5px;
+	position: fixed;
+	text-align: center;
+	top: 0;
 	z-index: 99;
 
+	/* tooltip header (optional) */
 	h4 {
-		text-align: center;
-		margin: 0px;
-		padding: 5px;
 		border-bottom: 1px solid $shade-4;
-	}
-
-	p {
-		text-align: center;
-		margin: 0px;
+		margin: 0;
 		padding: 5px;
-		font-size: 0.8em;
 	}
 
-	pre {
+	/* main text */
+	p {
+		font-size: 0.8em;
+		margin: 0;
+		padding: 5px;
+	}
+
+	/* monospace text */
+	pre { 
 		font-family: "Monaco", monospace;
+		text-align: left;
 	}
 }
 
-#canvas {
-
-	width: 100%;
+/* three js canvas container */
+.canvas-container {
 	height: calc(100vh - 50px);
+	width: 100%;
 
 	canvas {
-		width: 100%;
 		height: 100%;
+		width: 100%;
 	}
 }
 

@@ -108,7 +108,7 @@ var Model = function(json, child=null) {
 		Build HTML into the #structure element
 	*/
 	this.build_structure = function() {
-		var section = $("#structure > .content");
+		var section = $("#structure > .section-content");
 		// ensure element is clear
 		section.children().remove();
 

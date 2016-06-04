@@ -40,7 +40,7 @@ $(document).ready(function() {
 		remove_model(model);
 		model = new Model(JSON.parse(json));
 
-		model.build_structure();
+		//model.build_structure();
 	}
 
 	/*

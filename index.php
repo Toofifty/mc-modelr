@@ -58,32 +58,82 @@
 		</div>
 
 		<div id="app" class="app">
-			<div id="control-panel">
-				<div id="control">
-					<p>Controls here</p>
+			<div id="left-panel" class="side-panel side-panel-left">
+				<div class="panel-container">
+					<div class="section">
+						<h4>This a section, yo</h4>
+						<div class="section-content">
+							<p>This be section content</p>
+						</div>
+					</div>
 				</div>
-				<svg id="control-resize" class="icon">
+				<svg id="left-resize" class="icon resizer resizer-left">
 					<use xlink:href="icons.svg#icon-down"></use>
 				</svg>
 			</div>
-			<div id="canvas"></div>
-			<div id="code-panel">
-				<div id="code-container">
-					<div id="code" class="section">
-						<h4 id="code-title">JSON</h4>
-						<div class="content">
-							<textarea id="code-text"></textarea>
-							<ul id="code-opts" class="section-bottom-opts">
+
+			<div id="canvas" class="canvas-container"></div>
+
+			<div id="right-panel" class="side-panel side-panel-right">
+				<div class="panel-container">
+
+					<div id="model-opts" class="section">
+						<div class="section-content">
+							<ul id="code-opts" class="section-opts">
 								<li id="refresh-model" class="button"><svg class="icon"><use xlink:href="icons.svg#icon-model-refresh"></use></svg></li><li id="auto-refresh" class="button disabled"><svg class="icon"><use xlink:href="icons.svg#icon-toggle-auto-refresh"></use></svg></li><li id="copy-model" class="button disabled"><svg class="icon"><use xlink:href="icons.svg#icon-copy-clipboard"></use></svg></li>
 							</ul>
 						</div>
 					</div>
+
+					<div id="code" class="section">
+						<h4 id="code-title">JSON</h4>
+						<div class="section-content">
+							<textarea id="code-text"></textarea>
+						</div>
+					</div>
+
 					<div id="structure" class="section">
 						<h4 id="structure-title">Structure</h4>
-						<div class="content"></div>
+						<div id="model-structure" class="section-content">
+							<ul>
+								<li>
+									<div class="top-level-header level-header">
+										<p>Checkbox</p>
+										<input type='checkbox'/>
+									</div>
+								</li>
+								<li>
+									<div class="top-level-header level-header">
+										<p>Textures</p>
+										<svg class="icon toggle-collapse">
+											<use xlink:href="icons.svg#icon-down"></use>
+										</svg>
+									</div>
+									<ul class="level-list">
+										<li>
+											<div class='level-header'>
+												<svg class="icon action button">
+													<use xlink:href="icons.svg#icon-minus"></use>
+												</svg>
+												<p class='key'>KEY</p>
+												<input type='text'/>
+											</div>
+										</li>
+									</ul>
+								</li>
+								<li>
+									<div class="top-level-header level-header">
+										<p>Elements</p>
+										<svg class="icon toggle-collapse">
+											<use xlink:href="icons.svg#icon-down"></use>
+										</svg>
+									</div>
+								</li>
+							</ul>
+						</div>
 					</div>
 				</div>
-				<svg id="code-resize" class="icon">
+				<svg id="right-resize" class="icon resizer resizer-right">
 					<use xlink:href="icons.svg#icon-down"></use>
 				</svg>
 			</div>
