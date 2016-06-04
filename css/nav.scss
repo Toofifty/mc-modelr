@@ -52,15 +52,15 @@ html, body {
 	position: fixed;
 	z-index: 1;
 
-	top: 0px;
+	top: 0;
 
 	background: $shade-3;
 	color: #FFF;
-	padding: 0px;
+	padding: 0;
 	width: 100%;
-	box-shadow: 0px 0px 10px $soft-shadow;
+	box-shadow: 0 0 10px $soft-shadow;
 	border-bottom: 1px solid $shade-1;
-	text-shadow: 0px 0px 2px $softer-shadow;
+	text-shadow: 0 0 2px $softer-shadow;
 
 	overflow: hidden;
 
@@ -72,16 +72,16 @@ html, body {
 
 	h2 {
 		font-size: 1.5em;
-		margin: 0px;
-		padding: 0px 15px 0px 15px;
+		margin: 0;
+		padding: 0 15px 0 15px;
 		display: inline-block;
 		vertical-align: middle;
 		transition: 0.5s;
 	}
 
 	.left, .right {
-		width: calc(50% - 10px);
-		height: calc(100% - 10px);
+		width: 50%;
+		height: 100%;
 		margin: 0px;
 		padding: 5px;
 		display: inline-block;
@@ -140,8 +140,8 @@ html, body {
 	#slim-toggle {
 		vertical-align: middle;
 		fill: #FFF;
-		width: 20px;
-		height: 20px;
+		width: 30px;
+		height: 30px;
 		padding: 5px;
 		transition: 0.5s;
 	}
@@ -190,8 +190,8 @@ html, body {
 	}
 }
 
-// palette testers
-.shade {
+/* color palette */
+[class^="shade-"] {
 	width: 10px;
 	margin: 0px;
 	height: 10px;
@@ -200,25 +200,11 @@ html, body {
 	z-index: 2;
 }
 
-.shade-1 {
-	background: $shade-1;
-}
-
-.shade-2 {
-	background: $shade-2;
-}
-
-.shade-3 {
-	background: $shade-3;
-}
-
-.shade-4 {
-	background: $shade-4;
-}
-
-.shade-5 {
-	background: $shade-5;
-}
+.shade-1 { background: $shade-1; }
+.shade-2 { background: $shade-2; }
+.shade-3 { background: $shade-3; }
+.shade-4 { background: $shade-4; }
+.shade-5 { background: $shade-5; }
 
 .icon {
 	display: inline-block;

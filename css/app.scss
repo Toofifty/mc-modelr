@@ -41,7 +41,7 @@ $transition-t: 0.5s;
 
 	/* UI side panels */
 	.side-panel {
-		background: $shade-5;
+		background: $soft-shadow;
 		border: 1px solid $shade-4;
 		box-shadow: 0 0 10px $soft-shadow;
 		height: calc(100% - 50px);
@@ -105,6 +105,7 @@ $transition-t: 0.5s;
 
 /* generic sub-panel sections */
 .section {
+	background: $shade-5;
 	border: 1px solid $shade-4;
 	border-radius: 5px;
 	box-shadow: 1px 1px 0 $softer-shadow;
@@ -134,8 +135,7 @@ $transition-t: 0.5s;
 	#code-text {
 		font-size: 0.8em;
 		border: none;
-		min-height: 400px;
-		height: 400px;
+		height: 50vh;
 		background: $shade-5;
 		resize: vertical;
 		width: 100%;
@@ -219,241 +219,6 @@ $transition-t: 0.5s;
 	canvas {
 		height: 100%;
 		width: 100%;
-	}
-}
-
-#structure {
-
-	.content {
-		ul {
-			list-style-type: none;
-			display: block;
-			padding: 0px;
-			margin: 0px;
-
-			li {
-				width: 100%;
-				padding: 0px;
-				//background: $shade-4;
-				border-bottom: 1px solid $shade-4;
-
-				p {
-					margin: 0px;
-					display: inline-block;
-				}
-
-				input[type="checkbox"] {
-					float: right;
-					vertical-align: middle;
-				}
-
-				.structure-header {
-					padding: 5px;
-
-					.toggle-icon {
-						fill: #FFF;
-						height: 20px;
-						width: 20px;
-						vertical-align: middle;
-						float: right;
-						transform: rotate(180deg);
-						transition: 0.5s;
-					}
-				}
-
-				.structure-header:hover {
-					background: $shade-4;
-
-					.toggle-icon {
-						fill: $shade-3;
-					}
-				}
-
-				.structure-header[isopen="true"] {
-					//box-shadow: 0px 5px 10px $softer-shadow;
-					border-bottom: 1px solid $shade-3;
-
-					.toggle-icon {
-						transform: rotate(0deg);
-					}
-				}
-
-				ul {
-					padding: 5px;
-					width: calc(100% - 10px);
-
-					li {
-						box-sizing: border-box;
-						margin: 0px;
-						padding: 0px;
-						//border: 1px solid $shade-4;
-						border: none;
-						margin-top: 2px;
-						border-radius: 5px;
-						box-shadow: 1px 1px 0px $softer-shadow;
-						min-height: 23px;
-
-						.toggle-icon {
-							vertical-align: middle;
-							float: right;
-							padding: 3.5px;
-							transform: rotate(180deg);
-							transition: 0.5s;
-						}
-
-						.texture-info {
-							border-radius: 5px;
-						}
-
-						.texture-info:hover {
-							background: $shade-4;
-						}
-
-						.element-header {
-							border-radius: 5px;
-						}
-
-						.element-header:hover {
-							background: $shade-4;
-
-							.toggle-icon {
-								fill: $shade-3;
-							}
-						}
-
-						.element-header[isopen="true"] {
-							border-bottom: 1px solid $shade-3;
-							border-radius: 5px 5px 0px 0px;
-
-							.action {
-								border-radius: 5px 0px 0px 0px;
-							}
-
-							.action-notleft {
-								border-radius: 0px;
-							}
-
-							.toggle-icon {
-								transform: rotate(0deg);
-							}
-						}
-
-						.element-structure {
-							border-radius: 0px 0px 5px 5px;
-							border: 1px solid $shade-4;
-							overflow: hidden;
-							font-size: 0.8em;
-							width: calc(100% - 12px);
-
-							li:hover {
-								background: $shade-4;
-							}
-
-							.element-values {
-								text-align: right;
-								width: 80%;//calc(80% - 22px);
-								display: inline-block;
-							}
-
-							input[type="number"] {
-								padding: 3px;
-								vertical-align: middle;
-								width: 27px;
-								color: #FFF;
-								background: $shade-5;
-								border: none;
-								border-bottom: 1px solid $shade-4;
-								border-radius: 4px;
-								margin-right: 3px;
-								text-align: center;
-							}
-
-							input[type="number"]:hover {
-								border-bottom: 1px solid $shade-3;
-							}
-
-							input[type="checkbox"] {
-								margin: 5px;
-							}
-						}
-
-						.element-key {
-							vertical-align: middle;
-							width: calc(20% - 7px);
-							padding: 3.5px;
-						}
-					}
-
-					input[type="text"] {
-						vertical-align: middle;
-						padding: 3px;
-						margin: 1px;
-						background: $shade-5;
-						border: none;
-						border-bottom: 1px solid $shade-4;
-						color: #FFF;
-						font-family: "Monaco", monospace;
-						width: calc(75% - 27px);
-						//box-shadow: inset 2px 2px 0px $softer-shadow;
-						font-size: 0.6em;
-						border-radius: 4px;
-					}
-
-					input[type="text"]:hover {
-						border-bottom: 1px solid $shade-3;
-					}
-
-					input[type="text"]:active {
-						border-bottom: 1px solid $shade-2;
-					}
-
-					.key {
-						vertical-align: middle;
-						padding: 3.5px;
-						width: calc(25% - 12px) !important;
-						font-size: 0.8em;
-					}
-
-					[class^="element-header-"] {
-						vertical-align: middle;
-						padding: 3.5px;
-						font-size: 0.8em;
-					}
-
-					.element-header-id {
-						text-align: center;
-						width: 20px;
-					}
-
-					.action {
-						vertical-align: middle;
-						padding: 5px;
-						border-radius: 5px 0px 0px 5px;
-						height: 13px;
-						width: 12px;
-						overflow: visible;
-					}
-
-					.action-notleft {
-						@extend .action;
-						border-radius: 0px;
-					}
-
-					.action-double {
-						@extend .action;
-						width: 34px;
-					}
-				}
-			}
-		}
-	}
-
-	.collapsed {
-		height: 0px;
-		padding: 0px !important;
-		overflow: hidden !important;
-		box-shadow: none;
-		border: none !important;
 	}
 }
 

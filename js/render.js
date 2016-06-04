@@ -8,6 +8,8 @@ var pp_enabled;
 
 $(document).ready(function() {
 	var stop_hover = false;
+	var show_wireframe = true;
+	var wireframes = [];
 
 	// THREE.js variables
 	var scene, camera, raycaster, controls, renderer;
@@ -40,6 +42,7 @@ $(document).ready(function() {
 		remove_model(model);
 		model = new Model(JSON.parse(json));
 
+		build_model_structure(model);
 		//model.build_structure();
 	}
 
@@ -114,6 +117,9 @@ $(document).ready(function() {
 		sparse_wireframe.rotation.x = -Math.PI / 2;
 		sparse_wireframe.position.set(8, -0.01, 8);
 		scene.add(sparse_wireframe);
+
+		wireframes.push(dense_wireframe);
+		wireframes.push(sparse_wireframe);
 	}
 
 	var init_postprocessing = function() {
@@ -202,14 +208,29 @@ $(document).ready(function() {
 		mouse.y = -(e.offsetY / canvas.innerHeight()) * 2 + 1;
 	});
 
-	// debug keybinds
+	// editor keybinds
 	$(document).keydown(function(e) {
-		if (e.keyCode == 219) {
-			stop_hover = !stop_hover;
-			console.log("toggle stop_hover");
-		} else if (e.keyCode == 80) {
-			pp_enabled = !pp_enabled;
-			console.log("toggle pp_enabled");
+		switch(e.keyCode) {
+			case 219: // [
+				stop_hover = !stop_hover;
+				console.log("toggle stop_hover");
+				break;
+			case 80: // p
+				pp_enabled = !pp_enabled;
+				console.log("toggle pp_enabled");
+				break;
+			case 71: // g
+				if (show_wireframe) {
+					show_wireframe = false;
+					for (i in wireframes) scene.remove(wireframes[i]);
+				} else {
+					show_wireframe = true;
+					for (i in wireframes) scene.add(wireframes[i]);
+				}
+				console.log("toggle wireframe");
+				break;
+			default:
+				console.log(e.keyCode);
 		}
 	});
 

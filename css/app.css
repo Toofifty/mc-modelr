@@ -1,43 +1,127 @@
 @import url(https://fonts.googleapis.com/css?family=Lato);
-#model-structure {
-  /* generic ul and li */
-  /* action buttons */
-  /* top level headers (AO, textures, elements) */
-  /* lower-level headers */ }
-  #model-structure ul {
-    display: block;
-    list-style-type: none;
+#model-structure p {
+  /* all text */
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  cursor: default; }
+#model-structure ul {
+  /* generic ul */
+  display: block;
+  list-style-type: none;
+  padding: 0;
+  margin: 0; }
+  #model-structure ul li {
+    /* generic li */
     padding: 0;
-    margin: 0; }
-    #model-structure ul li {
-      border-bottom: 1px solid #547A82;
-      padding: 0;
-      width: 100%; }
-  #model-structure .action, #model-structure #structure .content ul li ul .action-notleft, #structure .content ul li ul #model-structure .action-notleft, #model-structure #structure .content ul li ul .action-double, #structure .content ul li ul #model-structure .action-double {
-    border-radius: 5px 0 0 5px;
-    height: 18px;
+    width: 100%; }
+#model-structure .level-header {
+  /* lower-level headers */
+  background: #5A5050;
+  border-radius: 5px;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2); }
+  #model-structure .level-header .action {
+    /* action buttons */
+    height: 23px;
     overflow: visible;
-    padding: 5px;
+    padding: 6px;
     vertical-align: middle;
-    width: 17px; }
-  #model-structure .top-level-header {
-    padding: 5px;
-    /* header text */
-    /* icon to toggle section collapse */ }
-    #model-structure .top-level-header p {
-      display: inline-block;
-      margin: 0; }
-    #model-structure .top-level-header .toggle-collapse {
-      float: right;
-      transform: rotate(180deg);
-      transition: 0.5s;
-      vertical-align: middle; }
-  #model-structure .level-header {
-    border-radius: 5px; }
-  #model-structure .level-header:hover {
-    background: #547A82; }
-  #model-structure .level-list {
-    padding: 5px; }
+    width: 23px; }
+  #model-structure .level-header .action-double {
+    width: 46px; }
+  #model-structure .level-header .action:first-child {
+    /* left-most action button needs rounding */
+    border-radius: 5px 0 0 5px; }
+  #model-structure .level-header .toggle-collapse {
+    /* icon to toggle section collapse */
+    float: right;
+    margin: 3.5px;
+    transform: rotate(180deg);
+    transition: 0.5s;
+    vertical-align: middle; }
+#model-structure .level-header[isopen="true"] {
+  border-bottom: 1px solid #3EACA8;
+  border-radius: 5px 5px 0 0; }
+  #model-structure .level-header[isopen="true"] .toggle-collapse {
+    transform: rotate(0deg); }
+#model-structure .level-header:hover, #model-structure .level-header[object-hovered="true"] {
+  background: #547A82; }
+#model-structure .level-list {
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid #547A82;
+  border-radius: 0 0 5px 5px;
+  border-top: none;
+  padding: 5px; }
+  #model-structure .level-list li {
+    margin-top: 5px; }
+  #model-structure .level-list li:first-child {
+    margin-top: 0; }
+#model-structure .top-level-header {
+  /* top level headers (AO, textures, elements) */
+  border-bottom: 1px solid #547A82;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0;
+  padding: 5px; }
+  #model-structure .top-level-header .toggle-collapse {
+    margin: 0; }
+#model-structure .top-level-header:hover {
+  border-bottom: 1px solid #3EACA8; }
+#model-structure .label {
+  /* info and level labels */
+  font-size: 0.8em;
+  padding: 2px 8px;
+  vertical-align: middle;
+  width: 30%; }
+#model-structure .label-id {
+  text-align: center;
+  width: 30px; }
+#model-structure .label-1-button {
+  width: calc(30% - 23px); }
+#model-structure .label-2-button {
+  width: calc(30% - 46px); }
+#model-structure .input {
+  display: inline-block;
+  width: calc(70% - 2px);
+  vertical-align: middle; }
+#model-structure .input-flex {
+  display: inline-flex; }
+#model-structure .input-label {
+  width: calc(30% - 2px); }
+#model-structure .input-label-1-button {
+  width: calc(30% - 25px); }
+#model-structure input[type="checkbox"] {
+  /* checkboxes */
+  float: right;
+  vertical-align: middle; }
+#model-structure input[type="text"], #model-structure input[type="number"], #model-structure select {
+  /* text boxes */
+  background: #5A5050;
+  border: none;
+  border-bottom: 1px solid #547A82;
+  border-top: 1px solid #5A5050;
+  border-radius: 4px;
+  color: #FFF;
+  font-family: "Monaco", monospace;
+  font-size: 0.8em;
+  height: 19px;
+  margin: 1px;
+  padding: 3px; }
+#model-structure select {
+  padding: 0; }
+#model-structure input[type="text"]:hover, #model-structure input[type="number"]:hover {
+  border-bottom: 1px solid #3EACA8; }
+#model-structure input[type="text"]:focus, #model-structure input[type="number"]:focus {
+  border-bottom: 1px solid #A2D4AB;
+  /* remove OS's outline */
+  outline: none; }
+#model-structure input[type="number"] {
+  flex-grow: 1;
+  min-width: 30px; }
+#model-structure .collapsed {
+  border: none;
+  height: 0;
+  overflow: hidden;
+  padding: 0; }
 
 * {
   box-sizing: border-box; }
@@ -58,7 +142,7 @@
   /* UI side panels */
   /* left and right panel positioning */ }
   .app .side-panel {
-    background: #5A5050;
+    background: rgba(0, 0, 0, 0.4);
     border: 1px solid #547A82;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     height: calc(100% - 50px);
@@ -108,6 +192,7 @@
 
 /* generic sub-panel sections */
 .section {
+  background: #5A5050;
   border: 1px solid #547A82;
   border-radius: 5px;
   box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
@@ -132,8 +217,7 @@
   .section #code-text {
     font-size: 0.8em;
     border: none;
-    min-height: 400px;
-    height: 400px;
+    height: 50vh;
     background: #5A5050;
     resize: vertical;
     width: 100%;
@@ -199,153 +283,6 @@
   .canvas-container canvas {
     height: 100%;
     width: 100%; }
-
-#structure .content ul {
-  list-style-type: none;
-  display: block;
-  padding: 0px;
-  margin: 0px; }
-  #structure .content ul li {
-    width: 100%;
-    padding: 0px;
-    border-bottom: 1px solid #547A82; }
-    #structure .content ul li p {
-      margin: 0px;
-      display: inline-block; }
-    #structure .content ul li input[type="checkbox"] {
-      float: right;
-      vertical-align: middle; }
-    #structure .content ul li .structure-header {
-      padding: 5px; }
-      #structure .content ul li .structure-header .toggle-icon {
-        fill: #FFF;
-        height: 20px;
-        width: 20px;
-        vertical-align: middle;
-        float: right;
-        transform: rotate(180deg);
-        transition: 0.5s; }
-    #structure .content ul li .structure-header:hover {
-      background: #547A82; }
-      #structure .content ul li .structure-header:hover .toggle-icon {
-        fill: #3EACA8; }
-    #structure .content ul li .structure-header[isopen="true"] {
-      border-bottom: 1px solid #3EACA8; }
-      #structure .content ul li .structure-header[isopen="true"] .toggle-icon {
-        transform: rotate(0deg); }
-    #structure .content ul li ul {
-      padding: 5px;
-      width: calc(100% - 10px); }
-      #structure .content ul li ul li {
-        box-sizing: border-box;
-        margin: 0px;
-        padding: 0px;
-        border: none;
-        margin-top: 2px;
-        border-radius: 5px;
-        box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.2);
-        min-height: 23px; }
-        #structure .content ul li ul li .toggle-icon {
-          vertical-align: middle;
-          float: right;
-          padding: 3.5px;
-          transform: rotate(180deg);
-          transition: 0.5s; }
-        #structure .content ul li ul li .texture-info {
-          border-radius: 5px; }
-        #structure .content ul li ul li .texture-info:hover {
-          background: #547A82; }
-        #structure .content ul li ul li .element-header {
-          border-radius: 5px; }
-        #structure .content ul li ul li .element-header:hover {
-          background: #547A82; }
-          #structure .content ul li ul li .element-header:hover .toggle-icon {
-            fill: #3EACA8; }
-        #structure .content ul li ul li .element-header[isopen="true"] {
-          border-bottom: 1px solid #3EACA8;
-          border-radius: 5px 5px 0px 0px; }
-          #structure .content ul li ul li .element-header[isopen="true"] .action, #structure .content ul li ul li .element-header[isopen="true"] .action-notleft, #structure .content ul li ul li .element-header[isopen="true"] .action-double {
-            border-radius: 5px 0px 0px 0px; }
-          #structure .content ul li ul li .element-header[isopen="true"] .action-notleft {
-            border-radius: 0px; }
-          #structure .content ul li ul li .element-header[isopen="true"] .toggle-icon {
-            transform: rotate(0deg); }
-        #structure .content ul li ul li .element-structure {
-          border-radius: 0px 0px 5px 5px;
-          border: 1px solid #547A82;
-          overflow: hidden;
-          font-size: 0.8em;
-          width: calc(100% - 12px); }
-          #structure .content ul li ul li .element-structure li:hover {
-            background: #547A82; }
-          #structure .content ul li ul li .element-structure .element-values {
-            text-align: right;
-            width: 80%;
-            display: inline-block; }
-          #structure .content ul li ul li .element-structure input[type="number"] {
-            padding: 3px;
-            vertical-align: middle;
-            width: 27px;
-            color: #FFF;
-            background: #5A5050;
-            border: none;
-            border-bottom: 1px solid #547A82;
-            border-radius: 4px;
-            margin-right: 3px;
-            text-align: center; }
-          #structure .content ul li ul li .element-structure input[type="number"]:hover {
-            border-bottom: 1px solid #3EACA8; }
-          #structure .content ul li ul li .element-structure input[type="checkbox"] {
-            margin: 5px; }
-        #structure .content ul li ul li .element-key {
-          vertical-align: middle;
-          width: calc(20% - 7px);
-          padding: 3.5px; }
-      #structure .content ul li ul input[type="text"] {
-        vertical-align: middle;
-        padding: 3px;
-        margin: 1px;
-        background: #5A5050;
-        border: none;
-        border-bottom: 1px solid #547A82;
-        color: #FFF;
-        font-family: "Monaco", monospace;
-        width: calc(75% - 27px);
-        font-size: 0.6em;
-        border-radius: 4px; }
-      #structure .content ul li ul input[type="text"]:hover {
-        border-bottom: 1px solid #3EACA8; }
-      #structure .content ul li ul input[type="text"]:active {
-        border-bottom: 1px solid #A2D4AB; }
-      #structure .content ul li ul .key {
-        vertical-align: middle;
-        padding: 3.5px;
-        width: calc(25% - 12px) !important;
-        font-size: 0.8em; }
-      #structure .content ul li ul [class^="element-header-"] {
-        vertical-align: middle;
-        padding: 3.5px;
-        font-size: 0.8em; }
-      #structure .content ul li ul .element-header-id {
-        text-align: center;
-        width: 20px; }
-      #structure .content ul li ul .action, #structure .content ul li ul .action-notleft, #structure .content ul li ul .action-double {
-        vertical-align: middle;
-        padding: 5px;
-        border-radius: 5px 0px 0px 5px;
-        height: 13px;
-        width: 12px;
-        overflow: visible; }
-      #structure .content ul li ul .action-notleft {
-        border-radius: 0px; }
-      #structure .content ul li ul .action-double {
-        width: 34px; }
-#structure .collapsed {
-  height: 0px;
-  padding: 0px !important;
-  overflow: hidden !important;
-  box-shadow: none;
-  border: none !important; }
 
 .button {
   background: #547A82;

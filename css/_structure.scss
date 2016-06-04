@@ -1,4 +1,5 @@
-$global-font: 'Lato', sans-serif;
+$global-font: "Lato", sans-serif;
+$mono-font: "Monaco", monospace;
 // "chill" shade set
 $shade-1: #E5EEC1;
 $shade-2: #A2D4AB;
@@ -8,66 +9,186 @@ $shade-5: #5A5050;
 // box and text shadows
 $soft-shadow: rgba(0, 0, 0, 0.4);
 $softer-shadow: rgba(0, 0, 0, 0.2);
+$softest-shadow: rgba(0, 0, 0, 0.1);
 $invisible: rgba(0, 0, 0, 0);
 
 // END GLOBALS
 
 #model-structure {
 
-	/* generic ul and li */
+	p {
+		/* all text */
+		display: inline-block;
+		margin: 0;
+		padding: 0;
+		cursor: default;
+	}
+
 	ul {
+		/* generic ul */
 		display: block;
 		list-style-type: none;
 		padding: 0;
 		margin: 0;
 
 		li {
-			border-bottom: 1px solid $shade-4;
+			/* generic li */
 			padding: 0;
 			width: 100%;
 		
 		}
 	}
 
-	/* action buttons */
-	.action {
-		border-radius: 5px 0 0 5px;
-		height: 18px;
-		overflow: visible;
-		padding: 5px;
-		vertical-align: middle;
-		width: 17px;
-	}
+	.level-header {
+		/* lower-level headers */
+		background: $shade-5;
+		border-radius: 5px;
+		box-shadow: 1px 1px 0 $softer-shadow;
 
-	/* top level headers (AO, textures, elements) */
-	.top-level-header {
-		padding: 5px;
-
-		/* header text */
-		p {
-			display: inline-block;
-			margin: 0;
+		.action {
+			/* action buttons */
+			height: 23px;
+			overflow: visible;
+			padding: 6px;
+			vertical-align: middle;
+			width: 23px;
 		}
 
-		/* icon to toggle section collapse */
+		.action-double {
+			width: 46px;
+		}
+
+		.action:first-child {
+			/* left-most action button needs rounding */
+			border-radius: 5px 0 0 5px;
+		}
+
 		.toggle-collapse {
+			/* icon to toggle section collapse */
 			float: right;
+			margin: 3.5px;
 			transform: rotate(180deg);
 			transition: 0.5s;
 			vertical-align: middle;
 		}
 	}
 
-	/* lower-level headers */
-	.level-header {
-		border-radius: 5px;
+	.level-header[isopen="true"] {
+		border-bottom: 1px solid $shade-3;
+		border-radius: 5px 5px 0 0;
+
+		.toggle-collapse {
+			transform: rotate(0deg);
+		}
 	}
 
-	.level-header:hover {
+	.level-header:hover, .level-header[object-hovered="true"] {
 		background: $shade-4;
 	}
 
 	.level-list {
+		background: $softest-shadow;
+		border: 1px solid $shade-4;
+		border-radius: 0 0 5px 5px;
+		border-top: none;
 		padding: 5px;
+
+		li {
+			margin-top: 5px;
+		}
+
+		li:first-child {
+			margin-top: 0;
+		}
+	}
+
+	.top-level-header {
+		/* top level headers (AO, textures, elements) */
+		border-bottom: 1px solid $shade-4;
+		border-top: 1px solid $softer-shadow;
+		border-radius: 0;
+		padding: 5px;
+
+		.toggle-collapse { margin: 0; }
+	}
+
+	.top-level-header:hover {
+		border-bottom: 1px solid $shade-3;
+	}
+
+	.label {
+		/* info and level labels */
+		font-size: 0.8em;
+		padding: 2px 8px;
+		vertical-align: middle;
+		width: 30%;
+	}
+
+	.label-id {
+		text-align: center;
+		width: 30px;
+	}
+
+	.label-1-button { width: calc(30% - 23px); }
+	.label-2-button { width: calc(30% - 46px); }
+
+	.input {
+		display: inline-block;
+		width: calc(70% - 2px);
+		vertical-align: middle;
+	}
+
+	.input-flex {
+		display: inline-flex;
+	}
+
+	.input-label { width: calc(30% - 2px); }
+	.input-label-1-button { width: calc(30% - 25px); }
+
+	input[type="checkbox"] {
+		/* checkboxes */
+		float: right;
+		vertical-align: middle;
+	}
+
+	input[type="text"], input[type="number"], select {
+		/* text boxes */
+		background: $shade-5;
+		border: none;
+		border-bottom: 1px solid $shade-4;
+		border-top: 1px solid $shade-5;
+		border-radius: 4px;
+		color: #FFF;
+		font-family: $mono-font;
+		font-size: 0.8em;
+		height: 19px;
+		margin: 1px;
+		padding: 3px;
+	}
+
+	select {
+		padding: 0;
+	}
+
+	input[type="text"]:hover, input[type="number"]:hover {
+		border-bottom: 1px solid $shade-3;
+	}
+
+	input[type="text"]:focus, input[type="number"]:focus {
+		border-bottom: 1px solid $shade-2;
+		/* remove OS's outline */
+		outline: none;
+	}
+
+	input[type="number"] {
+		flex-grow: 1;
+		min-width: 30px;
+	}
+
+	.collapsed {
+		border: none;
+		height: 0;
+		overflow: hidden;
+		padding: 0;
 	}
 }

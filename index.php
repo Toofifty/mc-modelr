@@ -50,9 +50,9 @@
 					<li>summer</li>
 					<li>chill</li>
 				</ul>
-				<p class="shade shade-1"></p><p class="shade shade-2"></p><p class="shade shade-3"></p><p class="shade shade-4"></p><p class="shade shade-5"></p>
+				<p class="shade-1"></p><p class="shade-2"></p><p class="shade-3"></p><p class="shade-4"></p><p class="shade-5"></p>
 				<svg id="slim-toggle" class="icon">
-					<use xlink:href="icons.svg#icon-down"></use>
+					<use xlink:href="icons.svg#icon-down"/>
 				</svg>
 			</div>
 		</div>
@@ -60,6 +60,12 @@
 		<div id="app" class="app">
 			<div id="left-panel" class="side-panel side-panel-left">
 				<div class="panel-container">
+					<div id="structure" class="section">
+						<h4 id="structure-title">Structure</h4>
+						<div id="model-structure" class="section-content">
+						</div>
+					</div>
+					
 					<div class="section">
 						<h4>This a section, yo</h4>
 						<div class="section-content">
@@ -80,7 +86,21 @@
 					<div id="model-opts" class="section">
 						<div class="section-content">
 							<ul id="code-opts" class="section-opts">
-								<li id="refresh-model" class="button"><svg class="icon"><use xlink:href="icons.svg#icon-model-refresh"></use></svg></li><li id="auto-refresh" class="button disabled"><svg class="icon"><use xlink:href="icons.svg#icon-toggle-auto-refresh"></use></svg></li><li id="copy-model" class="button disabled"><svg class="icon"><use xlink:href="icons.svg#icon-copy-clipboard"></use></svg></li>
+								<li id="refresh-model" class="button">
+									<svg class="icon">
+										<use xlink:href="icons.svg#icon-model-refresh" />
+									</svg>
+								</li>
+								<li id="auto-refresh" class="button disabled">
+									<svg class="icon">
+										<use xlink:href="icons.svg#icon-toggle-auto-refresh"/>
+									</svg>
+								</li>
+								<li id="copy-model" class="button disabled">
+									<svg class="icon">
+										<use xlink:href="icons.svg#icon-copy-clipboard"/>
+									</svg>
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -89,47 +109,6 @@
 						<h4 id="code-title">JSON</h4>
 						<div class="section-content">
 							<textarea id="code-text"></textarea>
-						</div>
-					</div>
-
-					<div id="structure" class="section">
-						<h4 id="structure-title">Structure</h4>
-						<div id="model-structure" class="section-content">
-							<ul>
-								<li>
-									<div class="top-level-header level-header">
-										<p>Checkbox</p>
-										<input type='checkbox'/>
-									</div>
-								</li>
-								<li>
-									<div class="top-level-header level-header">
-										<p>Textures</p>
-										<svg class="icon toggle-collapse">
-											<use xlink:href="icons.svg#icon-down"></use>
-										</svg>
-									</div>
-									<ul class="level-list">
-										<li>
-											<div class='level-header'>
-												<svg class="icon action button">
-													<use xlink:href="icons.svg#icon-minus"></use>
-												</svg>
-												<p class='key'>KEY</p>
-												<input type='text'/>
-											</div>
-										</li>
-									</ul>
-								</li>
-								<li>
-									<div class="top-level-header level-header">
-										<p>Elements</p>
-										<svg class="icon toggle-collapse">
-											<use xlink:href="icons.svg#icon-down"></use>
-										</svg>
-									</div>
-								</li>
-							</ul>
 						</div>
 					</div>
 				</div>
