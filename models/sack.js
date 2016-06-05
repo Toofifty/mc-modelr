@@ -9,7 +9,7 @@ var sack_json = {
 	
 	"elements": [
 	{
-		"__comment": "bottom",
+		"__name": "bottom",
 		"from": [ 4, 0, 4 ],
 		"to": [ 12, 2, 12 ],
 		"shade": true,
@@ -19,7 +19,7 @@ var sack_json = {
 		}
 	},
 	{
-		"__comment": "west-side",
+		"__name": "west-side",
 		"from": [ 2, 0, 2 ],
 		"to": [ 4, 14, 14 ],
 		"shade": true,
@@ -33,7 +33,7 @@ var sack_json = {
 		}
 	},
 	{
-		"__comment": "east-side",
+		"__name": "east-side",
 		"from": [ 12, 0, 2 ],
 		"to": [ 14, 14, 14 ],
 		"shade": true,
@@ -47,7 +47,7 @@ var sack_json = {
 		}
 	},
 	{
-		"__comment": "north-side",
+		"__name": "north-side",
 		"from": [ 4, 0, 2 ],
 		"to": [ 12, 14, 4 ],
 		"shade": true,
@@ -59,7 +59,7 @@ var sack_json = {
 		}
 	},
 	{
-		"__comment": "south-side",
+		"__name": "south-side",
 		"from": [ 4, 0, 12 ],
 		"to": [ 12, 14, 14 ],
 		"shade": true,
@@ -71,7 +71,7 @@ var sack_json = {
 		}
 	},
 	{
-		"__comment": "north-edge",
+		"__name": "north-edge",
 		"from": [ 1, 11, 1 ],
 		"to": [ 15, 14, 2 ],
 		"shade": true,
@@ -85,7 +85,7 @@ var sack_json = {
 		}
 	},
 	{
-		"__comment": "south-edge",
+		"__name": "south-edge",
 		"from": [ 1, 11, 14 ],
 		"to": [ 15, 14, 15 ],
 		"shade": true,
@@ -99,7 +99,7 @@ var sack_json = {
 		}
 	},
 	{
-		"__comment": "west-edge",
+		"__name": "west-edge",
 		"from": [ 1, 11, 2 ],
 		"to": [ 2, 14, 14 ],
 		"shade": true,
@@ -110,7 +110,7 @@ var sack_json = {
 		}
 	},
 	{
-		"__comment": "east-edge",
+		"__name": "east-edge",
 		"from": [ 14, 11, 2 ],
 		"to": [ 15, 14, 14 ],
 		"shade": true,

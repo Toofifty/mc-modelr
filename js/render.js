@@ -31,18 +31,19 @@ $(document).ready(function() {
 		var json = $("#code-text").val();
 
 		// abort if not change
-		if (Cookies.get("json-text") == json) {
+		if (cookie("json-text") == json) {
 			return;
 		}
 		
 		// set new json in cookies
-		Cookies.set("json-text", json);
+		cookie("json-text", json);
 
 		// remove old model from scene
 		remove_model(model);
 		model = new Model(JSON.parse(json));
 
-		build_model_structure(model);
+		st_bld.build_model($("#structure > .section-content"), model);
+		//build_model_structure(model);
 		//model.build_structure();
 	}
 
@@ -168,7 +169,7 @@ $(document).ready(function() {
 
 		// try to update model
 		// will render even without this
-		if (model != null) {
+		if (model !== null) {
 			model.render(scene);
 			get_hover();
 		}
@@ -209,7 +210,7 @@ $(document).ready(function() {
 	});
 
 	// editor keybinds
-	$(document).keydown(function(e) {
+	$("canvas").keydown(function(e) {
 		switch(e.keyCode) {
 			case 219: // [
 				stop_hover = !stop_hover;

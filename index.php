@@ -22,6 +22,7 @@
 		<script src="js/lib/ShaderPass.js"></script>
 		<script src="js/lib/MaskPass.js"></script>
 
+		<script src="js/build.js"></script>
 		<script src="js/model.js"></script>
 		<script src="js/render.js"></script>
 		<script src="js/nav.js"></script>
@@ -63,13 +64,6 @@
 					<div id="structure" class="section">
 						<h4 id="structure-title">Structure</h4>
 						<div id="model-structure" class="section-content">
-						</div>
-					</div>
-					
-					<div class="section">
-						<h4>This a section, yo</h4>
-						<div class="section-content">
-							<p>This be section content</p>
 						</div>
 					</div>
 				</div>

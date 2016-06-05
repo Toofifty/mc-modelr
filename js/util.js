@@ -11,63 +11,8 @@ var dirs = {
 	SOUTH: "south", EAST: "east", WEST: "west"
 };
 
-var Vector = function(x, y, z=null) {
-	this.x = x;
-	this.y = y;
-	this.z = z;
-
-	this.toString = function() {
-		return "(" + this.x + ", " + this.y 
-			+ (this.z !== null ? ", " + this.z : "") + ")";
-	}
-
-	this.as_array = function() {
-		var arr = [this.x, this.y];
-		if (this.z != null) { arr.push(this.z); }
-		return arr;
-	}
-
-	this.diff = function(other) {
-		if (this.z != null && other.z != null) {
-			return new Vector(other.x - this.x, other.y - this.y,
-				other.z - this.z);
-		}
-		return Vector(other.x - this.x, other.y - this.y);
-	}
-
-	this.div = function(divisor) {
-		if (this.z != null) {
-			return new Vector(this.x / divisor, this.y / divisor, 
-				this.z / divisor);
-		}
-		return new Vector(this.x / divisor, this.y / divisor);
-	}
-
-	this.add = function(other) {
-		if (this.z != null && other.z != null) {
-			return new Vector(this.x + other.x, this.y + other.y,
-				this.z + other.z);
-		}
-		return new Vector(this.x + other.x, this.y + other.y);
-	}
-}
-
 var len = function(dict_object) {
 	return Object.keys(dict_object).length;
-}
-
-var vector_from_array = function(arr) {
-	var scalars = [];
-	$.each(arr, function(i, value) {
-		scalars.push(parseInt(arr[i]));
-	});
-
-	if (arr.length == 2) {
-		return new Vector(scalars[0], scalars[1]);
-	} else if (arr.length == 3) {
-		return new Vector(scalars[0], scalars[1], scalars[2]);
-	}
-	throw "Could not construct vector from array " + arr;
 }
 
 var get_axis = function(axis_str) {
@@ -101,12 +46,48 @@ var load_model_image = function(key) {
 	return THREE.ImageUtils.loadTexture(path);
 }
 
+var vector_str = function(v) {
+	return "(" + v.x + ", " + v.y + ", " + v.z + ")";
+}
 
-var html_icon = function(icon, id, clazz="") {
-	if (icon.indexOf("icon-") == -1) {
-		icon = "icon-" + icon;
+var cookie = function(ck, val, sess=false) {
+	if (val === undefined) {
+		val = Cookies.get(ck);
+		if (val === undefined) return undefined;
+		if (val.contains("$list:")) {
+			val = val.split(":", 2)[1].split(",");
+			if (!isNaN(parseFloat(val[0]))) {
+				var t = val.slice();
+				val = [];
+				for (i in t) {
+					val.push(parseFloat(t[i]));
+				}
+			}
+		} 
+		else if (val == "true") val = true;
+		else if (val == "false") val = false;
+		else if (!isNaN(parseFloat(val))) val = parseFloat(val);
+
+		return val;
+
+	} else if (ck === undefined) {
+		return Cookies.get();
+
+	} else {
+		if (typeof val === "object") {
+			val = "$list:" + val.join(",");
+		}
+		if (!sess) Cookies.set(ck, val, {expires: 30});
+		else Cookies.set(ck, val);
+
+		return cookie(ck);
 	}
-	return "<svg id='" + id + "' class='icon " + clazz + "'>"
-		 +     "<use xlink:href='icons.svg#" + icon + "'></use>"
-		 + "</svg>";
+}
+
+var del_cookie = Cookies.remove;
+
+if (typeof String.prototype.contains === "undefined") {
+	String.prototype.contains = function(substring) {
+		return this.indexOf(substring) > -1;
+	}
 }

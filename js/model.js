@@ -44,7 +44,7 @@ var Model = function(json, child=null) {
 		}
 
 		// build elements
-		if (node.elements !== undefined && len(node.elements)) {
+		if (node.elements !== undefined && len(node.elements) > 0) {
 			for (index in node.elements) {
 				this.elements[index] = new Element(this, node.elements[index], index);
 			}
@@ -104,6 +104,62 @@ var Model = function(json, child=null) {
 			id++;
 		}
 		return id;
+	}
+
+	this.get_element_by_name = function(name) {
+		for (i in this.elements) {
+			if (this.elements[i].name == name) {
+				return this.elements[i];
+			}
+		}
+		return null;
+	}
+
+	/*
+		========== MODEL EDITING FUNCTIONS ==========
+	*/
+
+	/* Remove, edit and add textures */
+	this.remove_texture = function(key) {
+		delete this.texture_dict[key];
+		this.update_json();
+		st_bld.rem_texture(key);
+	}
+	this.edit_texture = function(key, path) {
+		this.texture_dict[key] = path;
+		this.update_json();
+	}
+	this.add_texture = function(key, path) {
+		if (this.texture_dict[key] || key == "" || path == "") return false;
+		this.edit_texture(key, path);
+		st_bld.add_texture(key, path);
+	}
+
+	this.remove_element = function(index) {
+		this.elements[index].remove();
+		delete this.elements[index];
+		this.update_json();
+		st_bld.rem_element(index);
+	}
+	this.rename_element = function(index, name) {
+		this.elements[index].name = name;
+		this.update_json();
+	}
+	this.add_element = function(name) {
+		var id = this.free_id();
+		this.elements[id] = new Element(this, {
+			from: [0, 0, 0],
+			to: [16, 16, 16,],
+			__name: name
+		}, id);
+		this.update_json();
+		st_bld.add_element(this.elements[id]);
+	}
+
+	/* update json section 
+	   called AFTER model changes, BEFORE ui changes */
+	this.update_json = function() {
+		$("#code-text").val(JSON.stringify(this.build_json(), null, 4));
 	}
 
 	/*
@@ -190,8 +246,8 @@ var Element = function(model, node, id=-1) {
 
 		// determine and set the "from" and "to" values
 		// i.e. the 3D corners of the element
-		this.from = vector_from_array(node.from);
-		this.to = vector_from_array(node.to);
+		this.from = new THREE.Vector3().fromArray(node.from);
+		this.to = new THREE.Vector3().fromArray(node.to);
 
 		this.build_box();
 
@@ -200,7 +256,7 @@ var Element = function(model, node, id=-1) {
 			this.has_rotation = true;
 			// set the origin (optional, default to 0,0,0)
 			if (node.origin !== undefined && node.origin.length == 3) {
-				this.origin = vector_from_array(node.origin);
+				this.origin = new THREE.Vector3().fromArray(node.origin);
 			}
 
 			// set the axis of rotation
@@ -227,12 +283,17 @@ var Element = function(model, node, id=-1) {
 		Build the THREE.js box to be used for rendering the object
 	*/
 	this.build_box = function() {
-		var size = this.from.diff(this.to);
+		if (this.in_scene) {
+			this.remove_from_scene();
+			this.box = null;
+			this.outline = null;
+		}
+		var size = this.to.clone().sub(this.from);
 		this.box = new THREE.Mesh(
 			new THREE.BoxGeometry(size.x, size.y, size.z),
 			new THREE.MeshLambertMaterial({color: this.color})
 		);
-		var midpoint = this.from.add(size.div(2));
+		var midpoint = this.from.clone().add(size.clone().multiplyScalar(1 / 2));
 		this.box.position.set(midpoint.x, midpoint.y, midpoint.z);
 
 		this.outline = new THREE.Mesh(
@@ -248,6 +309,7 @@ var Element = function(model, node, id=-1) {
 		Add this element to the scene
 	*/
 	this.render = function(scene) {
+		this.scene = scene;
 		if (!this.in_scene && this.box != null) {
 			this.in_scene = true;
 			scene.add(this.box);
@@ -264,11 +326,12 @@ var Element = function(model, node, id=-1) {
 	/*
 		Action performed on element hover
 	*/
-	this.on_hover = function() {
+	this.on_hover = function(ui) {
 		if (this.hover) return;
 		this.hover = true;
-		var tt_text = "<pre>from: " + this.from.toString() + "\n"
-			+ "to:   " + this.to.toString(); + "</pre>";
+		if (ui) return;
+		var tt_text = "<pre>from: " + vector_str(this.from) + "\n"
+			+ "to:   " + vector_str(this.to); + "</pre>";
 		create_tooltip(tt_text, true, this.name);
 		$("#elem-" + this.id + "-header").attr("object-hovered", true);
 		//this.box.material.color.set("#F0F");
@@ -278,12 +341,38 @@ var Element = function(model, node, id=-1) {
 	/*
 		Action performed when hover focus is lost
 	*/
-	this.off_hover = function() {
+	this.off_hover = function(ui) {
 		if (!this.hover) return;
 		this.hover = false;
 		clear_tooltip();
 		$("#elem-" + this.id + "-header").attr("object-hovered", false);
 		//this.box.material.color.set(this.color);
+	}
+
+	/* delete this element */
+	this.remove = function() {
+		this.remove_from_scene();
+	}
+
+	this.remove_from_scene = function() {
+		this.scene.remove(this.box);
+		this.scene.remove(this.outline);
+		this.in_scene = false;
+		this.outline_in_scene = false;
+	}
+
+	this.set_from = function(x, y, z) {
+		this.from.x = parseFloat(x);
+		this.from.y = parseFloat(y);
+		this.from.z = parseFloat(z);
+		this.build_box();
+	}
+
+	this.set_to = function(x, y, z) {
+		this.to.x = parseFloat(x);
+		this.to.y = parseFloat(y);
+		this.to.z = parseFloat(z);
+		this.build_box();
 	}
 
 	/*
@@ -296,12 +385,11 @@ var Element = function(model, node, id=-1) {
 		// set name
 		if (this.name != "null") {
 			out.__name = this.name;
-			console.log(out.__name);
 		}
 
 		// set bounds
-		out.from = this.from.as_array();
-		out.to = this.to.as_array();
+		out.from = this.from.toArray();
+		out.to = this.to.toArray();
 
 		// set shade
 		if (this.shade !== undefined) {
@@ -310,7 +398,7 @@ var Element = function(model, node, id=-1) {
 
 		// set rotations
 		if (this.axis != null) {
-			out.origin = this.origin.as_array();
+			out.origin = this.origin.toArray();
 			out.axis = axis[this.axis];
 			out.angle = this.angle;
 			out.rescale = this.rescale;
@@ -339,7 +427,7 @@ var Element = function(model, node, id=-1) {
 
 	// rotations
 	this.has_rotation = false;
-	this.origin = new Vector(8, 8, 8);
+	this.origin = new THREE.Vector3(8, 8, 8);
 	this.axis = null;
 	this.angle = 0;
 	this.rescale = false;
@@ -353,6 +441,7 @@ var Element = function(model, node, id=-1) {
 
 	// 3D box
 	this.box = null;
+	this.scene = null;
 	this.in_scene = false;
 
 	this.color = "#AAA";
@@ -373,8 +462,8 @@ var Face = function(element, node) {
 	this.load_face = function(node) {
 		// set the uv coordinates
 		if (node.uv !== undefined && node.uv.length == 4) {
-			this.uv_from = vector_from_array(node.uv.slice(0, 2));
-			this.uv_to = vector_from_array(node.uv.slice(2));
+			this.uv_from = new THREE.Vector2().fromArray(node.uv.slice(0, 2));
+			this.uv_to = new THREE.Vector2().fromArray(node.uv.slice(2));
 		} else {
 			// default to 0,0 16,16
 			this.uv_from = new Vector(0, 0);
@@ -411,7 +500,7 @@ var Face = function(element, node) {
 		var out = {};
 
 		// uv and texture str
-		out.uv = this.uv_from.as_array().concat(this.uv_to.as_array());
+		out.uv = this.uv_from.toArray().concat(this.uv_to.toArray());
 		out.texture = "#" + this.texture_str;
 
 		// cullface

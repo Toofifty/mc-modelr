@@ -2,7 +2,7 @@
 	Code area syntax highlighter
 */
 
-var build_structure;
+var build_model_structure;
 
 $(document).ready(function() {
 
@@ -67,15 +67,15 @@ $(document).ready(function() {
 		// create a HTML texture li
 		var texture_li = function(key, val, is_input=false) {
 			var meat = is_input ? ""
-				+ html_icon("plus", "", "action button")
+				+ html_icon("plus", "tex-new-add", "action button")
 				+ "<input type='text' class='input-label input-label-1-button' placeholder='" + key + "'>"
 				+ "<input type='text' class='input' placeholder='" + val + "'>"
 				: ""
-				+ html_icon("minus", "", "action button")
+				+ html_icon("minus", "tex-" + key + "-remove", "action button")
 				+ "<p class='label label-1-button'>" + key + "</p>"
 				+ "<input type='text' class='input' value='" + val + "'/>";
 
-			return	"<li>"
+			return	"<li id='" + (is_input ? "new-tex" : "tex-" + key) + "'>"
 				+		"<div class='level-header'>"
 				+			meat
 				+		"</div>"
@@ -85,10 +85,29 @@ $(document).ready(function() {
 		// populate textures
 		for (texture_key in model.texture_dict) {
 			st_textures.append(texture_li(texture_key, model.texture_dict[texture_key]));
+
+			// activate remove buttons
+			$("#tex-" + texture_key + "-remove").click(function() {
+				var key = $(this).attr("id").split("-", 2)[1];
+				model.remove_texture(key);
+			});
+
+			// activate text area auto updater
+			$("#tex-" + texture_key + " input").keyup(function() {
+				var key = $(this).parent().parent().attr("id").split("-", 2)[1];
+				model.edit_texture(key, $(this).val());
+			});
 		}
 
 		// add empty texture
 		st_textures.append(texture_li("texture key", "texture path", true));
+
+		// activate empty texture
+		$("#tex-new-add").click(function() {
+			var key = $(this).next().val();
+			var path = $(this).next().next().val();
+			model.add_texture(key, path);
+		});
 
 		// append element header and list
 		st_container.append(
@@ -122,13 +141,17 @@ $(document).ready(function() {
 		// append empty element
 		st_elements.append(
 			"<li>"
-		+		"<div class='level-header'>"
-		+			html_icon("plus", "", "action action-double button")
+		+		"<div id='elem-add' class='level-header'>"
+		+			html_icon("plus", "add-element", "action action-double button")
 		+			"<p class='label label-id'>" + model.free_id() + "</p>"
 		+			"<input type='text' class='input input-label input-label-1-button' placeholder='new element'>"
 		+		"</div>"
 		+	"</li>"
 		);
+
+		$("#add-element").click(function() {
+			model.add_element($(this).next().next().val());
+		});
 	}
 
 	var build_element_structure = function(element, ul) {
@@ -138,8 +161,8 @@ $(document).ready(function() {
 		ul.append(
 			"<li>"
 		+		"<div id='" + id + "-header' class='level-header'>"
-		+			html_icon("pencil", id + "-edit", "action button")
 		+			html_icon("minus", id + "-remove", "action button")
+		+			html_icon("pencil", id + "-rename", "action button")
 		+			"<p class='label label-id'>" + element.id + "</p>"
 		+			"<p class='label label-elem'>" + element.name + "</p>"
 		+			html_icon("down", "", "toggle-collapse")
@@ -150,8 +173,47 @@ $(document).ready(function() {
 
 		var st_element = $("#st-" + id);
 
+		// add renaming function
+		$("#" + id + "-rename").click(function() {
+			var id = $(this).attr("id").split("-", 3)[1];
+			var label = $(this).next().next();
+			var name = label.text();
+			label.remove();
+			var name_input = $(bld.elm("input", {
+				id: "elem-" + id + "-renaming", 
+				type: "text", 
+				class: "input input-label input-label-2-button", 
+				value: name
+			}));
+			name_input.insertAfter($(this).next());
+
+			name_input.change(function() {
+				//var id = $(this).attr("id").split("-", 3)[1];
+				console.log(id);
+				model.rename_element(id, $(this).val());
+			});
+
+			var confirm = $(bld.icon("checkmark", "elem-" + id + "-rename-confirm", "action button"));
+			confirm.insertAfter(name_input);
+			confirm.click(function(e) {
+				e.stopPropagation();
+				label.text(name_input.val());
+				label.insertAfter($(this));
+				$(this).prev().remove();
+				$(this).remove();
+			});
+		});
+
+		// add removal function
+		$("#" + id + "-remove").click(function() {
+			var id = $(this).attr("id").split("-", 3)[1];
+			model.remove_element(id);
+		});
+
 		// add element toggle
 		$("#" + id + "-header").click(function() {
+			// don't open if editing name
+			if ($(this).children("input").length > 0) return;
 			if ($(this).attr("isopen") == "true") {
 				$(this).attr("isopen", false);
 				st_element.addClass("collapsed");
@@ -161,26 +223,68 @@ $(document).ready(function() {
 			}
 		})
 		// add 3D hover elements when hovered
-		.mouseover(function() { element.on_hover(); })
-		.mouseout(function() { element.off_hover(); });
+		.parent().mouseover(function() { element.on_hover(true); })
+		.mouseout(function() { element.off_hover(true); });
 
 		// append bounds
 		st_element.append(
 			"<li>"
 		+		"<div class='level-header'>"
 		+			"<p class='label'>Bounds</p>"
-		+			"<div class='input input-flex'>"
-		+				"<input type='number' value='" + element.from.x + "'>"
-		+				"<input type='number' value='" + element.from.y + "'>"
-		+				"<input type='number' value='" + element.from.z + "'>"
+		+			"<div id='" + id + "-bounds' class='input input-flex'>"
+		+				"<input id='" + id + "-b-from-x' type='number' min='-16' max='32' value='" + element.from.x + "'>"
+		+				"<input id='" + id + "-b-from-y' type='number' min='-16' max='32' value='" + element.from.y + "'>"
+		+				"<input id='" + id + "-b-from-z' type='number' min='-16' max='32' value='" + element.from.z + "'>"
 		+				"&middot;"
-		+				"<input type='number' value='" + element.to.x + "'>"
-		+				"<input type='number' value='" + element.to.y + "'>"
-		+				"<input type='number' value='" + element.to.z + "'>"
+		+				"<input id='" + id + "-b-to-x' type='number' min='-16' max='32' value='" + element.to.x + "'>"
+		+				"<input id='" + id + "-b-to-y' type='number' min='-16' max='32' value='" + element.to.y + "'>"
+		+				"<input id='" + id + "-b-to-z' type='number' min='-16' max='32' value='" + element.to.z + "'>"
 		+			"</div>"
 		+		"</div>"
 		+	"</li>"
 		);
+
+		// anonymouse function to use in both change and mousewheel events
+		var bound_update = function() {
+			var id_base = "#" + $(this).attr("id").slice(0, -1);
+			if (id_base.contains("from")) {
+				element.set_from(
+					$(id_base + "x").val(),
+					$(id_base + "y").val(),
+					$(id_base + "z").val()
+				);
+			} else {
+				element.set_to(
+					$(id_base + "x").val(),
+					$(id_base + "y").val(),
+					$(id_base + "z").val()
+				);
+			}
+		}
+
+		$("[id^='" + id + "-b-']").change(function() {
+			var id_base = "#" + $(this).attr("id").slice(0, -1);
+			if (id_base.contains("from")) {
+				element.set_from(
+					$(id_base + "x").val(),
+					$(id_base + "y").val(),
+					$(id_base + "z").val()
+				);
+			} else {
+				element.set_to(
+					$(id_base + "x").val(),
+					$(id_base + "y").val(),
+					$(id_base + "z").val()
+				);
+			}
+		});
+
+		$("[id^='" + id + "-b-']").on("mousewheel", function(event) {
+			$(this).val(parseFloat($(this).val()) + event.originalEvent.deltaY / -100);
+			$(this).change();
+			event.preventDefault();
+
+		});
 
 		var checked = element.shade ? " checked" : "";
 
@@ -364,7 +468,7 @@ $(document).ready(function() {
 	});
 
 	/* load text from cookies */
-	var json = Cookies.get("json-text");
+	var json = cookie("json-text");
 	$("#code-text").val(json ? json : JSON.stringify(sack_json, null, 4));
 	update_model();
 

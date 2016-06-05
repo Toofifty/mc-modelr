@@ -142,7 +142,7 @@
   /* UI side panels */
   /* left and right panel positioning */ }
   .app .side-panel {
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.2);
     border: 1px solid #547A82;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     height: calc(100% - 50px);

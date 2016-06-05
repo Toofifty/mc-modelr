@@ -41,7 +41,7 @@ $transition-t: 0.5s;
 
 	/* UI side panels */
 	.side-panel {
-		background: $soft-shadow;
+		background: $softer-shadow;
 		border: 1px solid $shade-4;
 		box-shadow: 0 0 10px $soft-shadow;
 		height: calc(100% - 50px);
