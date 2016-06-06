@@ -63,6 +63,7 @@ var st_bld = {
 		$("#tex-" + key).remove();
 	},
 	add_element: function(element) {
+		this.st_elements = $("#st-elements");
 		var id = "elem-" + element.id;
 		var e = bld.elm;
 
@@ -221,7 +222,7 @@ var st_bld = {
 			}
 		});
 
-		for (dir in element.faces) {
+		for (dir in dirs) {
 			this.add_face(element, st_element_faces, dir);
 		}
 
@@ -238,7 +239,72 @@ var st_bld = {
 		$("#elem-add").children("p").text(model.free_id());
 	},
 	add_face: function(element, ul, dir) {
+		var e = bld.elm;
+		var face = element.faces[dir];
+		var id = "elem-" + element.id + "-face-" + dirs[dir];
 
+		if (face == null) {
+			ul.append(
+				e("li", {},
+					e("div", {id: id + "-header", class: "level-header"},
+						bld.icon("plus", id + "-add", "action button"),
+						e("p", {class: "label label-1-button"}, dirs[dir])
+					),
+					e("ul", {id: "st-" + id, class: "level-list collapsed"})
+				)
+			);
+			return;
+		}
+
+		ul.append(
+			e("li", {},
+				e("div", {id: id + "-header", class: "level-header"},
+					bld.icon("minus", id + "-remove", "action button"),
+					e("p", {class: "label label-1-button"}, dirs[dir]),
+					bld.icon("down", "", "toggle-collapse")
+				),
+				e("ul", {id: "st-" + id, class: "level-list collapsed"})
+			)
+		);
+
+		var st_face = $("#st-" + id);
+
+		// add faces toggle
+		$("#" + id + "-header").click(function() {
+			if ($(this).attr("isopen") == "true") {
+				$(this).attr("isopen", false);
+				st_face.addClass("collapsed");
+			} else {
+				$(this).attr("isopen", true);
+				st_face.removeClass("collapsed");
+			}
+		});
+
+		// append uv
+		st_face.append(
+			e("li", {},
+				e("div", {class: "level-header"},
+					e("p", {class: "label"}, "UV"),
+					e("div", {class: "input input-flex"},
+						e("input", {type: "number", value: face.uv_from.x}),
+						e("input", {type: "number", value: face.uv_from.y}),
+						"&middot;",
+						e("input", {type: "number", value: face.uv_to.x}),
+						e("input", {type: "number", value: face.uv_to.y})
+					)
+				)
+			)
+		);
+
+		// append texture str
+		st_face.append(
+			e("li", {},
+				e("div", {class: "level-header"},
+					e("p", {class: "label"}, "Texture"),
+					e("input", {class: "input", type: "text", value: face.texture_str})
+				)
+			)
+		);
 	},
 	build_model: function(section, model) {
 		build_model_structure(model);

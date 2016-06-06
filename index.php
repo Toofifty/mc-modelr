@@ -4,7 +4,7 @@
 		<title>mcmodelr &middot; JSON model maker</title>
 		<?php
 			$sections = ["nav", "app"];
-			$theme = isset($_COOKIE["theme"]) ? $_COOKIE["theme"] : "dawn";
+			$theme = isset($_COOKIE["theme"]) ? $_COOKIE["theme"] : "slick";
 
 			foreach ($sections as $section) {
 				echo '<link rel="stylesheet" type="text/css" href="css/theme.php?section='.$section.'&theme='.$theme.'" />';
@@ -35,7 +35,7 @@
 	<body>
 		<div id="header" class="header">
 			<div class="left">
-				<h2 class="logo">mcmodlr</h2>
+				<h2 class="logo"><img src="img/logo-min-120.png" width="40" height="40"/></h2>
 				<ul class="nav">
 					<li class="selected">Model</li>
 					<li>Texture</li>
@@ -43,13 +43,13 @@
 				</ul>
 			</div><div class="right">
 				<ul id="theme-select" class="theme">
-					<li class="selected">dawn</li>
+					<li>dawn</li>
 					<li>stark</li>
 					<li>flora</li>
 					<li>slick</li>
 					<li>vivid</li>
 					<li>summer</li>
-					<li>chill</li>
+					<li class="selected">chill</li>
 				</ul>
 				<p class="shade-1"></p><p class="shade-2"></p><p class="shade-3"></p><p class="shade-4"></p><p class="shade-5"></p>
 				<svg id="slim-toggle" class="icon">

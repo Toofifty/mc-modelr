@@ -135,7 +135,7 @@ $(document).ready(function() {
 		});
 
 		for (element_key in model.elements) {
-			build_element_structure(model.elements[element_key], st_elements);
+			st_bld.add_element(model.elements[element_key]);
 		}
 
 		// append empty element
@@ -153,194 +153,6 @@ $(document).ready(function() {
 			model.add_element($(this).next().next().val());
 		});
 	}
-
-	var build_element_structure = function(element, ul) {
-		var id = "elem-" + element.id;
-
-		// append name
-		ul.append(
-			"<li>"
-		+		"<div id='" + id + "-header' class='level-header'>"
-		+			html_icon("minus", id + "-remove", "action button")
-		+			html_icon("pencil", id + "-rename", "action button")
-		+			"<p class='label label-id'>" + element.id + "</p>"
-		+			"<p class='label label-elem'>" + element.name + "</p>"
-		+			html_icon("down", "", "toggle-collapse")
-		+		"</div>"
-		+		"<ul id='st-" + id + "' class='level-list collapsed'></ul>"
-		+	"</li>"
-		);
-
-		var st_element = $("#st-" + id);
-
-		// add renaming function
-		$("#" + id + "-rename").click(function() {
-			var id = $(this).attr("id").split("-", 3)[1];
-			var label = $(this).next().next();
-			var name = label.text();
-			label.remove();
-			var name_input = $(bld.elm("input", {
-				id: "elem-" + id + "-renaming", 
-				type: "text", 
-				class: "input input-label input-label-2-button", 
-				value: name
-			}));
-			name_input.insertAfter($(this).next());
-
-			name_input.change(function() {
-				//var id = $(this).attr("id").split("-", 3)[1];
-				console.log(id);
-				model.rename_element(id, $(this).val());
-			});
-
-			var confirm = $(bld.icon("checkmark", "elem-" + id + "-rename-confirm", "action button"));
-			confirm.insertAfter(name_input);
-			confirm.click(function(e) {
-				e.stopPropagation();
-				label.text(name_input.val());
-				label.insertAfter($(this));
-				$(this).prev().remove();
-				$(this).remove();
-			});
-		});
-
-		// add removal function
-		$("#" + id + "-remove").click(function() {
-			var id = $(this).attr("id").split("-", 3)[1];
-			model.remove_element(id);
-		});
-
-		// add element toggle
-		$("#" + id + "-header").click(function() {
-			// don't open if editing name
-			if ($(this).children("input").length > 0) return;
-			if ($(this).attr("isopen") == "true") {
-				$(this).attr("isopen", false);
-				st_element.addClass("collapsed");
-			} else {
-				$(this).attr("isopen", true);
-				st_element.removeClass("collapsed");
-			}
-		})
-		// add 3D hover elements when hovered
-		.parent().mouseover(function() { element.on_hover(true); })
-		.mouseout(function() { element.off_hover(true); });
-
-		// append bounds
-		st_element.append(
-			"<li>"
-		+		"<div class='level-header'>"
-		+			"<p class='label'>Bounds</p>"
-		+			"<div id='" + id + "-bounds' class='input input-flex'>"
-		+				"<input id='" + id + "-b-from-x' type='number' min='-16' max='32' value='" + element.from.x + "'>"
-		+				"<input id='" + id + "-b-from-y' type='number' min='-16' max='32' value='" + element.from.y + "'>"
-		+				"<input id='" + id + "-b-from-z' type='number' min='-16' max='32' value='" + element.from.z + "'>"
-		+				"&middot;"
-		+				"<input id='" + id + "-b-to-x' type='number' min='-16' max='32' value='" + element.to.x + "'>"
-		+				"<input id='" + id + "-b-to-y' type='number' min='-16' max='32' value='" + element.to.y + "'>"
-		+				"<input id='" + id + "-b-to-z' type='number' min='-16' max='32' value='" + element.to.z + "'>"
-		+			"</div>"
-		+		"</div>"
-		+	"</li>"
-		);
-
-		// anonymouse function to use in both change and mousewheel events
-		var bound_update = function() {
-			var id_base = "#" + $(this).attr("id").slice(0, -1);
-			if (id_base.contains("from")) {
-				element.set_from(
-					$(id_base + "x").val(),
-					$(id_base + "y").val(),
-					$(id_base + "z").val()
-				);
-			} else {
-				element.set_to(
-					$(id_base + "x").val(),
-					$(id_base + "y").val(),
-					$(id_base + "z").val()
-				);
-			}
-		}
-
-		$("[id^='" + id + "-b-']").change(function() {
-			var id_base = "#" + $(this).attr("id").slice(0, -1);
-			if (id_base.contains("from")) {
-				element.set_from(
-					$(id_base + "x").val(),
-					$(id_base + "y").val(),
-					$(id_base + "z").val()
-				);
-			} else {
-				element.set_to(
-					$(id_base + "x").val(),
-					$(id_base + "y").val(),
-					$(id_base + "z").val()
-				);
-			}
-		});
-
-		$("[id^='" + id + "-b-']").on("mousewheel", function(event) {
-			$(this).val(parseFloat($(this).val()) + event.originalEvent.deltaY / -100);
-			$(this).change();
-			event.preventDefault();
-
-		});
-
-		var checked = element.shade ? " checked" : "";
-
-		// append shade
-		st_element.append(
-			"<li>"
-		+		"<div class='level-header'>"
-		+			"<p class='label'>Shade</p>"
-		+			"<input type='checkbox'" + checked + ">"
-		+		"</div>"
-		+	"</li>"
-		);
-
-		// append rotation
-		if (element.has_rotation) {
-
-		} else {
-			st_element.append(
-				"<li>"
-			+		"<div class='level-header'>"
-			+			html_icon("plus", id + "-add-rotate", "action button-disabled")
-			+			"<p class='label label-1-button'>Rotation</p>"
-			+		"</div>"
-			+	"</li>"
-			);
-		}
-
-		// append faces header and list
-		st_element.append(
-			"<li>"
-		+		"<div id='" + id + "-faces-header' class='level-header'>"
-		+			"<p class='label'>Faces</p>"
-		+			html_icon("down", id + "-faces-toggle", "toggle-collapse")
-		+		"</div>"
-		+		"<ul id='st-" + id + "-faces' class='level-list collapsed'>"
-		+	"</li>"
-		);
-
-		var st_element_faces = $("#st-" + id + "-faces");
-
-		// add faces toggle
-		$("#" + id + "-faces-header").click(function() {
-			if ($(this).attr("isopen") == "true") {
-				$(this).attr("isopen", false);
-				st_element_faces.addClass("collapsed");
-			} else {
-				$(this).attr("isopen", true);
-				st_element_faces.removeClass("collapsed");
-			}
-		});
-
-		for (dir in element.faces) {
-			build_face_structure(element, st_element_faces, dir);
-		}
-	}
-
 	var build_face_structure = function(element, ul, dir) {
 		var face = element.faces[dir];
 		var id = "elem-" + element.id + "-face-" + dirs[dir];
@@ -477,5 +289,9 @@ $(document).ready(function() {
 	// });
 
 	$("#refresh-model").click(update_model);
+
+	$(".side-panel").keydown(function(e) {
+		e.stopPropagation();
+	});
 
 });

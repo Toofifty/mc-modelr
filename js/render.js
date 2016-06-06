@@ -9,10 +9,11 @@ var pp_enabled;
 $(document).ready(function() {
 	var stop_hover = false;
 	var show_wireframe = true;
+	var ortho_cam = false;
 	var wireframes = [];
 
 	// THREE.js variables
-	var scene, camera, raycaster, controls, renderer;
+	var scene, camera, o_camera, raycaster, controls, o_controls, renderer;
 
 	// postprocessing
 	pp_enabled = false;
@@ -76,11 +77,17 @@ $(document).ready(function() {
 	var init = function() {
 		scene = new THREE.Scene();
 		camera = new THREE.PerspectiveCamera(75, canvas.innerWidth() / canvas.innerHeight(), 0.1, 1000);
+		o_camera = new THREE.OrthographicCamera(canvas.innerWidth() / -100, canvas.innerWidth() / 100, 
+			canvas.innerHeight() / 100, canvas.innerHeight() / -100, 0.1, 1000);
 		raycaster = new THREE.Raycaster();
 		camera.position.set(8, 8, 80);
+		o_camera.position.set(8, 8, 80);
 
 		controls = new THREE.OrbitControls(camera, canvas.get(0));
 		controls.noKeys = true;
+
+		o_controls = new THREE.OrbitControls(o_camera, canvas.get(0));
+		o_controls.noKeys = true;
 
 		renderer = new THREE.WebGLRenderer({antialias: true});
 		renderer.setSize(canvas.innerWidth(), canvas.innerHeight());
@@ -140,12 +147,12 @@ $(document).ready(function() {
 		ssao_pass.renderToScreen = true;
 
 		ssao_pass.uniforms["tDepth"].value = depth_render_target.texture;
-		ssao_pass.uniforms["size"].value.set(canvas.innerWidth(), canvas.innerHeight());
+		ssao_pass.uniforms["size"].value.set(canvas.innerWidth() * 2, canvas.innerHeight());
 		ssao_pass.uniforms["cameraNear"].value = camera.near;
 		ssao_pass.uniforms["cameraFar"].value = camera.far;
 		ssao_pass.uniforms["onlyAO"].value = 0;
 		ssao_pass.uniforms["aoClamp"].value = 0.5;
-		ssao_pass.uniforms["lumInfluence"].value = 0.9;
+		ssao_pass.uniforms["lumInfluence"].value = 0.1;
 
 		effect_composer = new THREE.EffectComposer(renderer);
 		effect_composer.addPass(render_pass);
@@ -172,6 +179,11 @@ $(document).ready(function() {
 		if (model !== null) {
 			model.render(scene);
 			get_hover();
+		}
+
+		if (ortho_cam) {
+			renderer.render(scene, o_camera);
+			return;
 		}
 
 		if (pp_enabled) {
@@ -210,7 +222,7 @@ $(document).ready(function() {
 	});
 
 	// editor keybinds
-	$("canvas").keydown(function(e) {
+	$(window).keydown(function(e) {
 		switch(e.keyCode) {
 			case 219: // [
 				stop_hover = !stop_hover;
@@ -229,6 +241,16 @@ $(document).ready(function() {
 					for (i in wireframes) scene.add(wireframes[i]);
 				}
 				console.log("toggle wireframe");
+				break;
+			case 79: // o
+				ortho_cam = !ortho_cam;
+				console.log("toggled ortho_cam");
+				break;
+			case 73: // i
+				o_camera.position.set(80, 80, 80);
+				o_camera.lookAt(8, 8, 8);
+				o_camera.updateProjectionMatrix();
+				console.log("set iso camera");
 				break;
 			default:
 				console.log(e.keyCode);

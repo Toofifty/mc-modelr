@@ -249,8 +249,6 @@ var Element = function(model, node, id=-1) {
 		this.from = new THREE.Vector3().fromArray(node.from);
 		this.to = new THREE.Vector3().fromArray(node.to);
 
-		this.build_box();
-
 		// determine rotation of the object
 		if (node.rotation !== undefined) {
 			this.has_rotation = true;
@@ -274,9 +272,11 @@ var Element = function(model, node, id=-1) {
 		if (node.faces !== undefined && len(node.faces) > 0) {
 			for (dir_str in node.faces) {
 				var dir = get_dir(dir_str);
-				this.faces[dir] = new Face(model, node.faces[dir_str]);
+				this.faces[dir] = new Face(this, node.faces[dir_str]);
 			}
 		}
+
+		this.build_box();
 	}
 
 	/*
@@ -289,20 +289,32 @@ var Element = function(model, node, id=-1) {
 			this.outline = null;
 		}
 		var size = this.to.clone().sub(this.from);
-		this.box = new THREE.Mesh(
-			new THREE.BoxGeometry(size.x, size.y, size.z),
-			new THREE.MeshLambertMaterial({color: this.color})
-		);
-		var midpoint = this.from.clone().add(size.clone().multiplyScalar(1 / 2));
-		this.box.position.set(midpoint.x, midpoint.y, midpoint.z);
+		var geo = new THREE.BoxGeometry(size.x, size.y, size.z);
 
-		this.outline = new THREE.Mesh(
-			new THREE.BoxGeometry(size.x + 0.5, size.y + 0.5, size.z + 0.5),
+		var meshFaces = [];
+		for (var i = 0; i < 6; i++) {
+			meshFaces.push(new THREE.MeshLambertMaterial({color: this.color}));//, transparent: true, opacity: 0}));
+		}
+		var faceMaterial = new THREE.MeshFaceMaterial(meshFaces);
+
+		self.box = new THREE.Mesh(
+			geo,
+			faceMaterial
+		);
+		var midpoint = self.from.clone().add(size.clone().multiplyScalar(1 / 2));
+		self.box.position.set(midpoint.x, midpoint.y, midpoint.z);
+
+		self.outline = new THREE.Mesh(
+			new THREE.BoxGeometry(size.x, size.y, size.z),
 			new THREE.MeshLambertMaterial({color: shades.mid, wireframe: false, transparent: true})
 		);
 
-		this.outline.position.set(midpoint.x, midpoint.y, midpoint.z);
-		this.outline.material.opacity = 0.2;
+		self.outline.position.set(midpoint.x, midpoint.y, midpoint.z);
+		self.outline.material.opacity = 0.2;
+
+		for (var dir in this.faces) {
+			this.faces[dir].build_face(dir, this.box);
+		}
 	}
 
 	/*
@@ -491,6 +503,61 @@ var Face = function(element, node) {
 	*/
 	this.get_uv_to = function(tex_coords) {
 		return new Vector(0, 0);
+	}
+
+	this.get_bl = function() {
+		return this.uv_from.clone().multiplyScalar(1 / 16);
+	}
+
+	this.get_br = function() {
+		return new THREE.Vector2(this.uv_to.x, this.uv_from.y).multiplyScalar(1 / 16);
+	}
+
+	this.get_tl = function() {
+		return new THREE.Vector2(this.uv_from.x, this.uv_to.y).multiplyScalar(1 / 16);
+	}
+
+	this.get_tr = function() {
+		return this.uv_to.clone().multiplyScalar(1 / 16);
+	}
+
+	this.build_face = function(dir, box) {
+		var ind = [];
+		switch(dirs[dir]) {
+			// EAST 0,1
+			case dirs.EAST:
+				ind = [0, 1];
+				break;
+			// WEST 2,3
+			case dirs.WEST:
+				ind = [2, 3];
+				break;
+			// UP   4,5
+			case dirs.UP:
+				ind = [4, 5];
+				break;
+			// DOWN 6,7
+			case dirs.DOWN:
+				ind = [6, 7];
+				break;
+			// SOUTH 8,9
+			case dirs.SOUTH:
+				ind = [8, 9];
+				break;
+			// NORTH 10,11
+			case dirs.NORTH:
+				ind = [10, 11];
+				break;
+		}
+
+		box.geometry.faceVertexUvs[0][ind[0]] = [this.get_tl(), this.get_bl(), this.get_tr()];
+		box.geometry.faceVertexUvs[0][ind[1]] = [this.get_bl(), this.get_br(), this.get_tr()];
+
+		load_texture(this.element.model.texture_dict[this.texture_str], function(texture) {
+			var mat = box.material.materials[ind[0] / 2];
+			mat.setValues({map: texture, opacity: 1});
+			mat.needsUpdate = true;
+		});
 	}
 
 	/*

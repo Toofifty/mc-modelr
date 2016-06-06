@@ -11,6 +11,9 @@ var dirs = {
 	SOUTH: "south", EAST: "east", WEST: "west"
 };
 
+var texture_loader = new THREE.TextureLoader();
+var loaded_textures = {};
+
 var len = function(dict_object) {
 	return Object.keys(dict_object).length;
 }
@@ -35,15 +38,25 @@ var get_dir = function(dir_str) {
 	throw "Invalid direction: '" + dir_str + "'";
 }
 
-var load_model_image = function(key) {
+var load_texture = function(key, after) {
+	if (loaded_textures[key]) {
+		after(loaded_textures[key]);
+		return;
+	}
 	var path;
-	if (key.indexOf(":") > -1) {
-		var split = key.split(":", 1);
+	if (key.contains(":")) {
+		var split = key.split(":", 2);
 		path = "assets/" + split[0] + "/textures/" + split[1] + ".png";
 	} else {
 		path = "assets/minecraft/textures/" + key + ".png";
 	}
-	return THREE.ImageUtils.loadTexture(path);
+	// console.log("loaded " + key);
+	texture_loader.load(path, function(texture) {
+		loaded_textures[key] = texture;
+		console.log("saved " + key);
+		texture.magFilter = THREE.NearestFilter;
+		after(texture);
+	});
 }
 
 var vector_str = function(v) {

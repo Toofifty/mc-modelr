@@ -18,7 +18,6 @@
 #model-structure .level-header {
   /* lower-level headers */
   background: #5A5050;
-  border-radius: 5px;
   box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2); }
   #model-structure .level-header .action {
     /* action buttons */
@@ -30,8 +29,7 @@
   #model-structure .level-header .action-double {
     width: 46px; }
   #model-structure .level-header .action:first-child {
-    /* left-most action button needs rounding */
-    border-radius: 5px 0 0 5px; }
+    /* left-most action button needs rounding */ }
   #model-structure .level-header .toggle-collapse {
     /* icon to toggle section collapse */
     float: right;
@@ -40,8 +38,7 @@
     transition: 0.5s;
     vertical-align: middle; }
 #model-structure .level-header[isopen="true"] {
-  border-bottom: 1px solid #3EACA8;
-  border-radius: 5px 5px 0 0; }
+  border-bottom: 1px solid #3EACA8; }
   #model-structure .level-header[isopen="true"] .toggle-collapse {
     transform: rotate(0deg); }
 #model-structure .level-header:hover, #model-structure .level-header[object-hovered="true"] {
@@ -49,11 +46,10 @@
 #model-structure .level-list {
   background: rgba(0, 0, 0, 0.1);
   border: 1px solid #547A82;
-  border-radius: 0 0 5px 5px;
   border-top: none;
-  padding: 5px; }
+  padding: 2px; }
   #model-structure .level-list li {
-    margin-top: 5px; }
+    margin-top: 2px; }
   #model-structure .level-list li:first-child {
     margin-top: 0; }
 #model-structure .top-level-header {
@@ -99,7 +95,6 @@
   border: none;
   border-bottom: 1px solid #547A82;
   border-top: 1px solid #5A5050;
-  border-radius: 4px;
   color: #FFF;
   font-family: "Monaco", monospace;
   font-size: 0.8em;
