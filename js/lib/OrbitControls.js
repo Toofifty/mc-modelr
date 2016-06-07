@@ -346,7 +346,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 		if ( scope.enabled === false ) return;
 		event.preventDefault();
 
-		if ( event.button === 0 ) {
+		if ( event.button === 2 ) {
 			if ( scope.noRotate === true ) return;
 
 			state = STATE.ROTATE;
@@ -360,7 +360,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 			dollyStart.set( event.clientX, event.clientY );
 
-		} else if ( event.button === 2 ) {
+		} else if ( event.button === 0 ) {
 			if ( scope.noPan === true ) return;
 
 			state = STATE.PAN;

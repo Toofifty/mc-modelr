@@ -23,6 +23,7 @@
 		<script src="js/lib/MaskPass.js"></script>
 
 		<script src="js/build.js"></script>
+		<script src="js/edit.js"></script>
 		<script src="js/model.js"></script>
 		<script src="js/render.js"></script>
 		<script src="js/nav.js"></script>

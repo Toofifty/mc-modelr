@@ -11,6 +11,7 @@ $(document).ready(function() {
 	var show_wireframe = true;
 	var ortho_cam = false;
 	var wireframes = [];
+	var md = false;
 
 	// THREE.js variables
 	var scene, camera, o_camera, raycaster, controls, o_controls, renderer;
@@ -42,6 +43,7 @@ $(document).ready(function() {
 		// remove old model from scene
 		remove_model(model);
 		model = new Model(JSON.parse(json));
+		model.scene = scene;
 
 		st_bld.build_model($("#structure > .section-content"), model);
 		//build_model_structure(model);
@@ -71,7 +73,7 @@ $(document).ready(function() {
 		if (stop_hover) return;
 		raycaster.setFromCamera(mouse, camera);
 		var intersects = raycaster.intersectObjects(scene.children);
-		model.on_hover(intersects);
+		model.ctrl.on_hover(intersects, mouse);
 	}
 
 	var init = function() {
@@ -85,6 +87,7 @@ $(document).ready(function() {
 
 		controls = new THREE.OrbitControls(camera, canvas.get(0));
 		controls.noKeys = true;
+		controls.noPan = true;
 
 		o_controls = new THREE.OrbitControls(o_camera, canvas.get(0));
 		o_controls.noKeys = true;
@@ -102,6 +105,7 @@ $(document).ready(function() {
 		scene.add(light);
 		scene.add(hemi);
 
+		/*
 		// dense (16x16) wireframe for underneath the model
 		// specifies the default resolution
 		var dense_wireframe = new THREE.Mesh(
@@ -125,9 +129,22 @@ $(document).ready(function() {
 		sparse_wireframe.rotation.x = -Math.PI / 2;
 		sparse_wireframe.position.set(8, -0.01, 8);
 		scene.add(sparse_wireframe);
+		*/
+
+		var dense_wireframe = new THREE.GridHelper(8, 1, shades.dark, shades.dark);
+		dense_wireframe.position.set(8, 0, 8);
+		scene.add(dense_wireframe);
+
+		var sparse_wireframe = new THREE.GridHelper(40, 8, shades.dark, shades.dark);
+		sparse_wireframe.position.set(8, 0, 8);
+		scene.add(sparse_wireframe);
 
 		wireframes.push(dense_wireframe);
 		wireframes.push(sparse_wireframe);
+
+		var arrow = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 0), 5, 0xFF00FF);
+		scene.add(arrow);
+
 	}
 
 	var init_postprocessing = function() {
@@ -177,6 +194,7 @@ $(document).ready(function() {
 		// try to update model
 		// will render even without this
 		if (model !== null) {
+			if (model.scene == null) model.scene = scene;
 			model.render(scene);
 			get_hover();
 		}
@@ -186,7 +204,7 @@ $(document).ready(function() {
 			return;
 		}
 
-		if (pp_enabled) {
+		if (pp_enabled && false) {
 			scene.overrideMaterial = depth_material;
 			renderer.render(scene, camera, depth_render_target, true);
 
@@ -207,7 +225,7 @@ $(document).ready(function() {
 	};
 
 	// mouse vector for hovering
-	var mouse = new THREE.Vector3(0, 0);
+	var mouse = {x: 0, y: 0, down: false}
 	// canvas to bind renderer to
 	var canvas = $("#canvas");
 
@@ -220,6 +238,12 @@ $(document).ready(function() {
 		mouse.x = (e.offsetX / canvas.innerWidth()) * 2 - 1;
 		mouse.y = -(e.offsetY / canvas.innerHeight()) * 2 + 1;
 	});
+
+	canvas.mousedown(function(e) {
+		if (e.button == 0) mouse.down = true;
+	}).mouseup(function(e) {
+		if (e.button == 0) mouse.down = false;
+	})
 
 	// editor keybinds
 	$(window).keydown(function(e) {
@@ -244,13 +268,21 @@ $(document).ready(function() {
 				break;
 			case 79: // o
 				ortho_cam = !ortho_cam;
-				console.log("toggled ortho_cam");
+				console.log("toggle ortho_cam");
 				break;
 			case 73: // i
 				o_camera.position.set(80, 80, 80);
 				o_camera.lookAt(8, 8, 8);
 				o_camera.updateProjectionMatrix();
 				console.log("set iso camera");
+				break;
+			case 76: // l
+				controls.noPan = !controls.noPan;
+				console.log("toggle controls.noPan");
+				break;
+			case 75: // k
+				controls.reset();
+				console.log("reset camera");
 				break;
 			default:
 				console.log(e.keyCode);

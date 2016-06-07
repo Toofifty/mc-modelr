@@ -130,8 +130,8 @@ var st_bld = {
 			}
 		})
 		// add 3D hover elements when hovered
-		.parent().mouseover(function() { element.on_hover(true); })
-		.mouseout(function() { element.off_hover(true); });
+		.parent().mouseover(function() { model.ctrl.get_ctrl(element).on_hover(true); })
+		.mouseout(function() { model.ctrl.get_ctrl(element).off_hover(); });
 
 		st_element.append(
 			e("li", {},

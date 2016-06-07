@@ -56,6 +56,7 @@ var Model = function(json, child=null) {
 		Render all the model components to the scene
 	*/
 	this.render = function(scene) {
+		this.scene = scene;
 		// render parent
 		if (this.parent != null) {
 			this.parent.render(scene);
@@ -66,35 +67,6 @@ var Model = function(json, child=null) {
 			this.elements[i].render(scene);
 		}
 	}
-
-	/*
-		Determine which element in being hovered over
-	*/
-	this.on_hover = function(hovered) {
-		if (hovered.length > 0) {
-			var top = hovered[0].object;
-			if (this.hover_element != null && (top == this.hover_element.box 
-					|| top == this.hover_element.outline)) {
-				return;
-			} 
-			for (i in this.elements) {
-				if (top == this.elements[i].box) {
-					if (this.hover_element != null) {
-						this.hover_element.off_hover();
-					}
-					this.elements[i].on_hover();
-					this.hover_element = this.elements[i];
-					return;
-				}
-			}
-		}
-
-		if (this.hover_element != null) {
-			this.hover_element.off_hover();
-			this.hover_element = null;
-		}
-	}
-
 	/*
 		Get the lowest free element id
 	*/
@@ -214,12 +186,16 @@ var Model = function(json, child=null) {
 	// elements
 	this.elements = {};
 
+	this.scene = null;
+
 	this.hover_element = null;
 
 	// ?
 	this.ref_str;
 
 	this.load_model(json);
+
+	this.ctrl = new ModelController(this);
 }
 
 /*
@@ -285,32 +261,23 @@ var Element = function(model, node, id=-1) {
 	this.build_box = function() {
 		if (this.in_scene) {
 			this.remove_from_scene();
-			this.box = null;
-			this.outline = null;
 		}
 		var size = this.to.clone().sub(this.from);
-		var geo = new THREE.BoxGeometry(size.x, size.y, size.z);
 
 		var meshFaces = [];
 		for (var i = 0; i < 6; i++) {
 			meshFaces.push(new THREE.MeshLambertMaterial({color: this.color}));//, transparent: true, opacity: 0}));
 		}
-		var faceMaterial = new THREE.MeshFaceMaterial(meshFaces);
 
 		self.box = new THREE.Mesh(
-			geo,
-			faceMaterial
+			new THREE.BoxGeometry(size.x, size.y, size.z),
+			new THREE.MeshFaceMaterial(meshFaces)
 		);
+
 		var midpoint = self.from.clone().add(size.clone().multiplyScalar(1 / 2));
 		self.box.position.set(midpoint.x, midpoint.y, midpoint.z);
 
-		self.outline = new THREE.Mesh(
-			new THREE.BoxGeometry(size.x, size.y, size.z),
-			new THREE.MeshLambertMaterial({color: shades.mid, wireframe: false, transparent: true})
-		);
-
-		self.outline.position.set(midpoint.x, midpoint.y, midpoint.z);
-		self.outline.material.opacity = 0.2;
+		self.box.is_model_element = true;
 
 		for (var dir in this.faces) {
 			this.faces[dir].build_face(dir, this.box);
@@ -322,43 +289,11 @@ var Element = function(model, node, id=-1) {
 	*/
 	this.render = function(scene) {
 		this.scene = scene;
+
 		if (!this.in_scene && this.box != null) {
 			this.in_scene = true;
 			scene.add(this.box);
 		}
-		if (this.hover && !this.outline_in_scene) {
-			this.outline_in_scene = true;
-			scene.add(this.outline);
-		} else if (!this.hover && this.outline_in_scene) {
-			this.outline_in_scene = false;
-			scene.remove(this.outline);
-		}
-	}
-
-	/*
-		Action performed on element hover
-	*/
-	this.on_hover = function(ui) {
-		if (this.hover) return;
-		this.hover = true;
-		if (ui) return;
-		var tt_text = "<pre>from: " + vector_str(this.from) + "\n"
-			+ "to:   " + vector_str(this.to); + "</pre>";
-		create_tooltip(tt_text, true, this.name);
-		$("#elem-" + this.id + "-header").attr("object-hovered", true);
-		//this.box.material.color.set("#F0F");
-
-	}
-
-	/*
-		Action performed when hover focus is lost
-	*/
-	this.off_hover = function(ui) {
-		if (!this.hover) return;
-		this.hover = false;
-		clear_tooltip();
-		$("#elem-" + this.id + "-header").attr("object-hovered", false);
-		//this.box.material.color.set(this.color);
 	}
 
 	/* delete this element */
@@ -458,8 +393,10 @@ var Element = function(model, node, id=-1) {
 
 	this.color = "#AAA";
 
-	this.outline = null;
+	this.hover_outline = null;
+	this.sel_outline = null;
 	this.outline_in_scene = false;
+	this.sel_outline_in_scene = false;
 
 	this.load_element(node);
 }
