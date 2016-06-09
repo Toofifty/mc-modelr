@@ -105,32 +105,6 @@ $(document).ready(function() {
 		scene.add(light);
 		scene.add(hemi);
 
-		/*
-		// dense (16x16) wireframe for underneath the model
-		// specifies the default resolution
-		var dense_wireframe = new THREE.Mesh(
-			new THREE.PlaneGeometry(16, 16, 16, 16),
-			new THREE.MeshBasicMaterial({
-				color: shades.lightest, wireframe: true
-			})
-		);
-		dense_wireframe.rotation.x = -Math.PI / 2;
-		dense_wireframe.position.set(8, -0.01, 8);
-		scene.add(dense_wireframe);
-
-		// sparse (5x5) wireframe for under and around the model
-		// specifies minecraft block sizes
-		var sparse_wireframe = new THREE.Mesh(
-			new THREE.PlaneGeometry(80, 80, 5, 5),
-			new THREE.MeshBasicMaterial({
-				color: shades.light, wireframe: true
-			})
-		);
-		sparse_wireframe.rotation.x = -Math.PI / 2;
-		sparse_wireframe.position.set(8, -0.01, 8);
-		scene.add(sparse_wireframe);
-		*/
-
 		var dense_wireframe = new THREE.GridHelper(8, 1, shades.dark, shades.dark);
 		dense_wireframe.position.set(8, 0, 8);
 		scene.add(dense_wireframe);
@@ -141,9 +115,6 @@ $(document).ready(function() {
 
 		wireframes.push(dense_wireframe);
 		wireframes.push(sparse_wireframe);
-
-		var arrow = new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), new THREE.Vector3(0, 0, 0), 5, 0xFF00FF);
-		scene.add(arrow);
 
 	}
 

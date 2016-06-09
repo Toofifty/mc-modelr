@@ -2,7 +2,7 @@
 	Helper functions for editing the model in the three.js canvas
 */
 
-var RESIZE = 0, TRANSLATE = 1;
+var FROM_RESIZE = 0, TO_RESIZE = 1, TRANSLATE = 2;
 var NONE = 0, HOVER = 1, SELECT = 2;
 
 /* ModelController class
@@ -59,7 +59,11 @@ var ModelController = function(model) {
 	   save it and call the appropriate methods */
 	this.on_hover = function(object_intersects, mouse) {
 
-		if (this.on_handle_hover(object_intersects, mouse)) return;
+		if (this.on_handle_hover(object_intersects, mouse)) {
+			if (this.hovered != null) this.hovered.off_hover();
+			this.hovered = null;
+			return;
+		}
 
 		// filter for only model elements
 		// ignores all ghost elements, handles and guide objects
@@ -125,13 +129,14 @@ var ModelController = function(model) {
 		for (i in object_intersects) {
 
 			if (object_intersects[i].object.is_arrow_hitbox) 
-				intersects.push(object_intersects[i].object);
+				intersects.push(object_intersects[i]);
 
 		}
 
-		if (intersects.length > 0 && mouse.down) {
+		if (intersects.length > 0) {
 
-			this.selected.drag(intersects[0], mouse);
+			if (mouse.down) this.selected.drag(intersects[0].object, intersects[0].point);
+			else this.selected.stop_drag();
 			return true;
 
 		} 
@@ -157,8 +162,8 @@ var ElementController = function(element) {
 	this.dragging_handle = null;
 
 	// create resize handles
-	this.from_handle = new Handle(this, element, element.from, RESIZE);
-	this.to_handle = new Handle(this, element, element.to, RESIZE);
+	this.from_handle = new Handle(this, element, element.from, FROM_RESIZE);
+	this.to_handle = new Handle(this, element, element.to, TO_RESIZE);
 
 	// create translate handle
 	this.translate_handle = new Handle(this, element, element.box.position, TRANSLATE);
@@ -210,6 +215,13 @@ var ElementController = function(element) {
 
 	}
 
+	this.stop_drag = function() {
+
+		if (this.dragging_handle != null)
+			this.dragging_handle.stop_drag();
+
+	}
+
 	this.drag = function(arrow, mouse) {
 
 		var to_arrow = this.to_handle.get_arrow_id(arrow);
@@ -250,6 +262,8 @@ var Handle = function(ctrl, element, pos, type) {
 	this.element = element;
 	this.pos = pos;
 	this.type = type;
+
+	this.drag_start = null;
 
 	this.scene = element.model.scene;
 
@@ -320,9 +334,75 @@ var Handle = function(ctrl, element, pos, type) {
 
 	}
 
-	this.drag = function(arrow_id) {
+	this.apply = function(x, y, z) {
 
-		console.log("start drag for arrow " + arrow_id);
+		this.old_pos = this.pos.clone();
+
+		x = parseInt(x);
+
+		this.object.translateX(x - this.pos.x);
+		this.object.translateY(y - this.pos.y);
+		this.object.translateZ(z - this.pos.z);
+
+		for (i in this.arrows) {
+			this.arrows[i].translateX(x - this.pos.x);
+			this.arrows[i].translateY(y - this.pos.y);
+			this.arrows[i].translateZ(z - this.pos.z);
+			this.arrow_hitboxes[i].translateX(x - this.pos.x);
+			this.arrow_hitboxes[i].translateY(y - this.pos.y);
+			this.arrow_hitboxes[i].translateZ(z - this.pos.z);
+		}
+
+		if (this.type == FROM_RESIZE) {
+
+			this.element.set_from();
+
+		} else if (this.type == TO_RESIZE) {
+
+			this.element.set_to(x, y, z);
+
+		}
+
+		var applied = x != this.old_pos.x || y != this.old_pos.y || z != this.old_pos.z;
+		return applied;
+
+	}
+
+	this.stop_drag = function() {
+
+		this.drag_start = null;
+
+	}
+
+	this.drag = function(arrow_id, point) {
+
+		arrow_id = parseInt(arrow_id);
+
+		switch(arrow_id) {
+
+			case 0: // x
+
+				if (this.drag_start == null) {
+					this.drag_start = point.x;
+					return;
+				}
+
+				if (this.apply(point.x - this.drag_start + this.pos.x, this.pos.y, this.pos.z))
+					this.drag_start = point.x;
+				break;
+
+			case 1: // y
+
+				if (this.drag_start == null) {
+					this.drag_start = point.y;
+					return;
+				}
+
+				if (this.apply(this.pos.x, point.y - this.drag_start + this.pos.y, this.pos.z))
+					this.drag_start = point.y;
+				break;
+
+		}
 
 	}
 }
