@@ -211,7 +211,8 @@ $(document).ready(function() {
 	});
 
 	canvas.mousedown(function(e) {
-		if (e.button == 0) mouse.down = true;
+		// do not allow selections when panning
+		if (e.button == 0 && controls.noPan) mouse.down = true;
 	}).mouseup(function(e) {
 		if (e.button == 0) mouse.down = false;
 	})

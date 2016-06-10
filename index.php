@@ -58,7 +58,6 @@
 				</svg>
 			</div>
 		</div>
-
 		<div id="app" class="app">
 			<div id="left-panel" class="side-panel side-panel-left">
 				<div class="panel-container">
@@ -77,7 +76,6 @@
 
 			<div id="right-panel" class="side-panel side-panel-right">
 				<div class="panel-container">
-
 					<div id="model-opts" class="section">
 						<div class="section-content">
 							<ul id="code-opts" class="section-opts">
@@ -99,7 +97,6 @@
 							</ul>
 						</div>
 					</div>
-
 					<div id="code" class="section">
 						<h4 id="code-title">JSON</h4>
 						<div class="section-content">

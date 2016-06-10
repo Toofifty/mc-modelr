@@ -1,5 +1,6 @@
 /*
-	Helper functions for editing the model in the three.js canvas
+	Control objects and functions to manipulate the model and elements in 
+	the 3D three.js canvas
 */
 
 var FROM_RESIZE = 0, TO_RESIZE = 1, TRANSLATE = 2;
@@ -118,7 +119,7 @@ var ModelController = function(model) {
 
 	}
 
-	/* check whether any handle arrows are being hovered / clicked */
+	/* perform actions when any handle arrows are being hovered / clicked */
 	this.on_handle_hover = function(object_intersects, mouse) {
 
 		// can only see handles when something is selected
@@ -171,6 +172,8 @@ var ElementController = function(element) {
 	// create ghost element
 	this.ghost = new GhostElement(this, element);
 
+	/* show ghost box + tooltip on mouse hover
+	   ui: if true, don't create a tooltip */
 	this.on_hover = function(ui) {
 
 		if (this.hovered) return;
@@ -186,6 +189,7 @@ var ElementController = function(element) {
 
 	}
 
+	/* remove ghost box + tooltip on mouse out */
 	this.off_hover = function() {
 
 		if (!this.hovered) return;
@@ -197,6 +201,7 @@ var ElementController = function(element) {
 
 	}
 
+	/* on click, show ghost box */
 	this.select = function() {
 
 		if (this.selected) return;
@@ -206,6 +211,7 @@ var ElementController = function(element) {
 
 	}
 
+	/* on deselect, hide ghost box */
 	this.deselect = function() {
 
 		if (!this.selected) return;
@@ -215,13 +221,8 @@ var ElementController = function(element) {
 
 	}
 
-	this.stop_drag = function() {
-
-		if (this.dragging_handle != null)
-			this.dragging_handle.stop_drag();
-
-	}
-
+	/* begin or continue dragging a handle on
+	   this element */
 	this.drag = function(arrow, mouse) {
 
 		var to_arrow = this.to_handle.get_arrow_id(arrow);
@@ -247,6 +248,14 @@ var ElementController = function(element) {
 			}
 
 		}
+
+	}
+
+	/* stop dragging a handle */
+	this.stop_drag = function() {
+
+		if (this.dragging_handle != null)
+			this.dragging_handle.stop_drag();
 
 	}
 }
@@ -275,13 +284,15 @@ var Handle = function(ctrl, element, pos, type) {
 		new THREE.MeshLambertMaterial({color: shades.lightest})
 	);
 
+	var d = type == TO_RESIZE ? 1 : -1;
+
 	this.arrows = [
-		new THREE.ArrowHelper(new THREE.Vector3(1, 0, 0), this.pos, 2, 0xFF0000),
-		new THREE.ArrowHelper(new THREE.Vector3(0, 1, 0), this.pos, 2, 0x00FF00),
-		new THREE.ArrowHelper(new THREE.Vector3(0, 0, 1), this.pos, 2, 0x0000FF)
+		new THREE.ArrowHelper(new THREE.Vector3(d, 0, 0), this.pos, 2, 0xFF0000),
+		new THREE.ArrowHelper(new THREE.Vector3(0, d, 0), this.pos, 2, 0x00FF00),
+		new THREE.ArrowHelper(new THREE.Vector3(0, 0, d), this.pos, 2, 0x0000FF)
 	];
 
-	var hitbox_mat = new THREE.MeshBasicMaterial({transparent: true, opacity: 0.2, color: 0xFF00FF});
+	var hitbox_mat = new THREE.MeshBasicMaterial({transparent: true, opacity: 0.01, color: 0x000000});
 
 	this.arrow_hitboxes = [
 		new THREE.Mesh(new THREE.BoxGeometry(2, 0.5, 0.5), hitbox_mat),
@@ -293,13 +304,13 @@ var Handle = function(ctrl, element, pos, type) {
 		self.arrow_hitboxes[arrow_id].position.set(offset.x, offset.y, offset.z);
 	}
 
-	set_position(0, this.pos.clone().add(new THREE.Vector3(1, 0, 0)));
-	set_position(1, this.pos.clone().add(new THREE.Vector3(0, 1, 0)));
-	set_position(2, this.pos.clone().add(new THREE.Vector3(0, 0, 1)));
+	set_position(0, this.pos.clone().add(new THREE.Vector3(d, 0, 0)));
+	set_position(1, this.pos.clone().add(new THREE.Vector3(0, d, 0)));
+	set_position(2, this.pos.clone().add(new THREE.Vector3(0, 0, d)));
 
 	for (i in this.arrow_hitboxes) this.arrow_hitboxes[i].is_arrow_hitbox = true;
 
-
+	/* get an arrow ID from it's object */
 	this.get_arrow_id = function(arrow) {
 
 		for (i in this.arrows)
@@ -309,6 +320,7 @@ var Handle = function(ctrl, element, pos, type) {
 
 	}
 
+	/* display handle in scene (when element selected) */
 	this.show = function() {
 
 		if (this.scene == null) this.scene = this.element.model.scene;
@@ -323,6 +335,7 @@ var Handle = function(ctrl, element, pos, type) {
 
 	}
 
+	/* hide handle in scene */
 	this.hide = function() {
 
 		this.scene.remove(this.object);
@@ -334,20 +347,36 @@ var Handle = function(ctrl, element, pos, type) {
 
 	}
 
-	this.apply = function(x, y, z) {
+	/* apply a position to the handle object, arrows and
+	   model element.
+	   x, y, z = coordinates in 3D space (not deltas) 
+	   snap = whether to truncate values to ints (default: true) */
+	this.apply = function(x, y, z, snap=true) {
+
+		if (snap) {
+
+			x = parseInt(x);
+			y = parseInt(y);
+			z = parseInt(z);
+
+		}
+
+		if (x < this.pos.x) x++;
+		if (y < this.pos.y) y++;
+		if (z < this.pos.z) z++;
 
 		this.old_pos = this.pos.clone();
 
-		x = parseInt(x);
-
+		// move the handle box
 		this.object.translateX(x - this.pos.x);
 		this.object.translateY(y - this.pos.y);
 		this.object.translateZ(z - this.pos.z);
 
 		for (i in this.arrows) {
-			this.arrows[i].translateX(x - this.pos.x);
-			this.arrows[i].translateY(y - this.pos.y);
-			this.arrows[i].translateZ(z - this.pos.z);
+			// move arrows
+			this.arrows[i].position.set(x, y, z);
+
+			// move hitboxes
 			this.arrow_hitboxes[i].translateX(x - this.pos.x);
 			this.arrow_hitboxes[i].translateY(y - this.pos.y);
 			this.arrow_hitboxes[i].translateZ(z - this.pos.z);
@@ -355,7 +384,7 @@ var Handle = function(ctrl, element, pos, type) {
 
 		if (this.type == FROM_RESIZE) {
 
-			this.element.set_from();
+			this.element.set_from(x, y, z);
 
 		} else if (this.type == TO_RESIZE) {
 
@@ -368,43 +397,87 @@ var Handle = function(ctrl, element, pos, type) {
 
 	}
 
+	/* stop dragging this handle
+	   clears drag_start, and rescales arrow hitboxes */
 	this.stop_drag = function() {
 
+		if (this.drag_start == null) return;
 		this.drag_start = null;
+
+		switch(this.dragging) {
+
+			case 0:
+				this.arrow_hitboxes[0].geometry.scale(1/10, 1/3, 1/3);
+				break;
+
+			case 1:
+				this.arrow_hitboxes[1].geometry.scale(1/3, 1/10, 1/3);
+				break;
+
+			case 2:
+				this.arrow_hitboxes[2].geometry.scale(1/3, 1/3, 1/10);
+				break;
+
+		}
+
+		this.dragging = null;
 
 	}
 
+	/* start or continue dragging the element,
+	   using the arrow _arrow_id_ at the cursor's 3D
+	   position _point_ */
 	this.drag = function(arrow_id, point) {
 
 		arrow_id = parseInt(arrow_id);
+
+		if (this.dragging != null && this.dragging != arrow_id) return;
 
 		switch(arrow_id) {
 
 			case 0: // x
 
-				if (this.drag_start == null) {
-					this.drag_start = point.x;
+				if (this.dragging == null) {
+					this.dragging = arrow_id;
+					this.arrow_hitboxes[this.dragging].geometry.scale(10, 3, 3);
 					return;
 				}
 
-				if (this.apply(point.x - this.drag_start + this.pos.x, this.pos.y, this.pos.z))
+				if (this.drag_start == null 
+						|| this.apply(point.x - this.drag_start + this.pos.x, this.pos.y, this.pos.z))
 					this.drag_start = point.x;
 				break;
 
 			case 1: // y
 
-				if (this.drag_start == null) {
-					this.drag_start = point.y;
+				if (this.dragging == null) {
+					this.dragging = arrow_id;
+					this.arrow_hitboxes[this.dragging].geometry.scale(3, 10, 3);
 					return;
 				}
 
-				if (this.apply(this.pos.x, point.y - this.drag_start + this.pos.y, this.pos.z))
+				if (this.drag_start == null 
+						|| this.apply(this.pos.x, point.y - this.drag_start + this.pos.y, this.pos.z))
 					this.drag_start = point.y;
+				break;
+
+			case 2: // z
+
+				if (this.dragging == null) {
+					this.dragging = arrow_id;
+					this.arrow_hitboxes[this.dragging].geometry.scale(3, 3, 10);
+					return;
+				}
+
+				if (this.drag_start == null 
+						|| this.apply(this.pos.x, this.pos.y, point.z - this.drag_start + this.pos.z))
+					this.drag_start = point.z;
 				break;
 
 		}
 
 	}
+
 }
 
 /* GhostElement class
@@ -440,9 +513,9 @@ var GhostElement = function(ctrl, element) {
 
 	// create box from element
 	this.box = (function(opts) {
-		var size = self.element.to.clone().sub(self.element.from);
+
+		var size = self.element.to.clone().sub(self.element.from).addScalar(opts.swell);
 		var mid = self.element.from.clone().add(size.clone().multiplyScalar(1 / 2));
-		size.addScalar(opts.swell);
 
 		var box = new THREE.Mesh(
 			new THREE.BoxGeometry(size.x, size.y, size.z),
@@ -454,6 +527,7 @@ var GhostElement = function(ctrl, element) {
 
 		box.position.set(mid.x, mid.y, mid.z);
 		return box;
+
 	})(this.hover_opts);
 
 	/* set the options on the box */
@@ -467,7 +541,9 @@ var GhostElement = function(ctrl, element) {
 		this.box.scale.z = ghost_size.z / box_size.z;
 
 		this.box.material.setValues({
-			color: opts.color, opacity: opts.opacity, wireframe: opts.wireframe
+			color: opts.color, 
+			opacity: opts.opacity, 
+			wireframe: opts.wireframe
 		});
 
 	}
@@ -532,6 +608,7 @@ var GhostElement = function(ctrl, element) {
 
 	}
 
+	/* off select */
 	this.deselect = function() {
 
 		this.selected = false;
