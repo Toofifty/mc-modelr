@@ -68,7 +68,7 @@ THREE.OrbitControls = function ( object, domElement ) {
 	this.noKeys = false;
 
 	// The four arrow keys
-	this.keys = { LEFT: 37, UP: 38, RIGHT: 39, BOTTOM: 40 };
+	this.keys = { LEFT: 65, UP: 87, RIGHT: 68, BOTTOM: 83, IN: 69, OUT: 81 };
 
 	////////////
 	// internals
@@ -482,31 +482,44 @@ THREE.OrbitControls = function ( object, domElement ) {
 
 	function onKeyDown( event ) {
 
-		if ( scope.enabled === false || scope.noKeys === true || scope.noPan === true ) return;
+		//if ( scope.enabled === false || scope.noKeys === true) return;
+
+		// rotate keys
+
+		var r = Math.PI / 40;
+
+
+		// pan keys
 		
 		switch ( event.keyCode ) {
 
 			case scope.keys.UP:
-				scope.pan( 0, scope.keyPanSpeed );
-				scope.update();
+				scope.rotateUp( r );
 				break;
 
 			case scope.keys.BOTTOM:
-				scope.pan( 0, - scope.keyPanSpeed );
-				scope.update();
+				scope.rotateUp( -r );
 				break;
 
 			case scope.keys.LEFT:
-				scope.pan( scope.keyPanSpeed, 0 );
-				scope.update();
+				scope.rotateLeft( r );
 				break;
 
 			case scope.keys.RIGHT:
-				scope.pan( - scope.keyPanSpeed, 0 );
-				scope.update();
+				scope.rotateLeft( -r );
+				break;
+
+			case scope.keys.IN:
+				scope.dollyOut();
+				break;
+
+			case scope.keys.OUT:
+				scope.dollyIn();
 				break;
 
 		}
+
+		scope.update();
 
 	}
 

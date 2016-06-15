@@ -160,30 +160,40 @@ $(document).ready(function() {
 		Render the entire scene each frame
 	*/
 	var render = function() {
+
 		requestAnimationFrame(render);
 
 		// try to update model
 		// will render even without this
 		if (model !== null) {
+			
 			if (model.scene == null) model.scene = scene;
 			model.render(scene);
 			get_hover();
+
 		}
 
 		if (ortho_cam) {
+
 			renderer.render(scene, o_camera);
 			return;
+
 		}
 
-		if (pp_enabled && false) {
+		if (pp_enabled) {
+
 			scene.overrideMaterial = depth_material;
 			renderer.render(scene, camera, depth_render_target, true);
 
 			scene.overrideMaterial = null;
 			effect_composer.render();
+
 		} else {
+
 			renderer.render(scene, camera);
+
 		}
+
 	}
 
 	// global shades
