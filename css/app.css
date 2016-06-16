@@ -17,7 +17,7 @@
     width: 100%; }
 #model-structure .level-header {
   /* lower-level headers */
-  background: #5A5050;
+  background: #222;
   box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2); }
   #model-structure .level-header .action {
     /* action buttons */
@@ -38,14 +38,14 @@
     transition: 0.5s;
     vertical-align: middle; }
 #model-structure .level-header[isopen="true"] {
-  border-bottom: 1px solid #3EACA8; }
+  border-bottom: 1px solid #9b59b6; }
   #model-structure .level-header[isopen="true"] .toggle-collapse {
     transform: rotate(0deg); }
 #model-structure .level-header:hover, #model-structure .level-header[object-hovered="true"] {
-  background: #547A82; }
+  background: #333; }
 #model-structure .level-list {
   background: rgba(0, 0, 0, 0.1);
-  border: 1px solid #547A82;
+  border: 1px solid #333;
   border-top: none;
   padding: 2px; }
   #model-structure .level-list li {
@@ -54,14 +54,14 @@
     margin-top: 0; }
 #model-structure .top-level-header {
   /* top level headers (AO, textures, elements) */
-  border-bottom: 1px solid #547A82;
+  border-bottom: 1px solid #333;
   border-top: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0;
   padding: 5px; }
   #model-structure .top-level-header .toggle-collapse {
     margin: 0; }
 #model-structure .top-level-header:hover {
-  border-bottom: 1px solid #3EACA8; }
+  border-bottom: 1px solid #9b59b6; }
 #model-structure .label {
   /* info and level labels */
   font-size: 0.8em;
@@ -91,10 +91,10 @@
   vertical-align: middle; }
 #model-structure input[type="text"], #model-structure input[type="number"], #model-structure select {
   /* text boxes */
-  background: #5A5050;
+  background: #222;
   border: none;
-  border-bottom: 1px solid #547A82;
-  border-top: 1px solid #5A5050;
+  border-bottom: 1px solid #333;
+  border-top: 1px solid #222;
   color: #FFF;
   font-family: "Monaco", monospace;
   font-size: 0.8em;
@@ -104,9 +104,9 @@
 #model-structure select {
   padding: 0; }
 #model-structure input[type="text"]:hover, #model-structure input[type="number"]:hover {
-  border-bottom: 1px solid #3EACA8; }
+  border-bottom: 1px solid #9b59b6; }
 #model-structure input[type="text"]:focus, #model-structure input[type="number"]:focus {
-  border-bottom: 1px solid #A2D4AB;
+  border-bottom: 1px solid #8e44ad;
   /* remove OS's outline */
   outline: none; }
 #model-structure input[type="number"] {
@@ -138,7 +138,7 @@
   /* left and right panel positioning */ }
   .app .side-panel {
     background: rgba(0, 0, 0, 0.2);
-    border: 1px solid #547A82;
+    border: 1px solid #333;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
     height: calc(100% - 50px);
     max-width: 45%;
@@ -159,7 +159,7 @@
       margin: 5px;
       position: absolute; }
     .app .side-panel .resizer:hover {
-      fill: #3EACA8; }
+      fill: #9b59b6; }
     .app .side-panel .resizer-left {
       right: -26px;
       transform: rotate(270deg); }
@@ -187,16 +187,15 @@
 
 /* generic sub-panel sections */
 .section {
-  background: #5A5050;
-  border: 1px solid #547A82;
-  border-radius: 5px;
+  background: #222;
+  border: 1px solid #333;
   box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
   margin-bottom: 10px;
   overflow-y: hidden;
   /* section header */ }
   .section h4 {
-    background: #547A82;
-    border-bottom: 1px solid #547A82;
+    background: #333;
+    border-bottom: 1px solid #333;
     font-size: 0.8em;
     margin: 0;
     padding: 5px;
@@ -206,14 +205,14 @@
   .section .section-content {
     color: #FFF;
     width: 100%;
-    background: #5A5050;
+    background: #222;
     border-radius: 5px;
     transition: 0.5s; }
   .section #code-text {
     font-size: 0.8em;
     border: none;
     height: 50vh;
-    background: #5A5050;
+    background: #222;
     resize: vertical;
     width: 100%;
     font-family: "Monaco", monospace;
@@ -245,8 +244,8 @@
 
 /* hover tooltip */
 #tooltip {
-  background: #5A5050;
-  border: 1px solid #547A82;
+  background: #222;
+  border: 1px solid #333;
   box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2);
   color: #FFF;
   left: 0;
@@ -260,7 +259,7 @@
   /* main text */
   /* monospace text */ }
   #tooltip h4 {
-    border-bottom: 1px solid #547A82;
+    border-bottom: 1px solid #333;
     margin: 0;
     padding: 5px; }
   #tooltip p {
@@ -280,17 +279,18 @@
     width: 100%; }
 
 .button {
-  background: #547A82;
+  background: #333;
   transition: 0.1s; }
 
 .button:hover {
-  background: #3EACA8; }
+  background: #9b59b6;
+  cursor: pointer; }
 
 .button:active {
-  background: #A2D4AB; }
+  background: #8e44ad; }
 
 .button-disabled {
-  background: #547A82;
-  fill: #5A5050; }
+  background: #333;
+  fill: #222; }
 
 /*# sourceMappingURL=app.css.map */

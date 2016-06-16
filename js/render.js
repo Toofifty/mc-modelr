@@ -12,6 +12,7 @@ $(document).ready(function() {
 	var ortho_cam = false;
 	var wireframes = [];
 	var md = false;
+	var pp_override = false;
 
 	// THREE.js variables
 	var scene, camera, o_camera, raycaster, controls, o_controls, renderer;
@@ -180,7 +181,7 @@ $(document).ready(function() {
 
 		}
 
-		if (pp_enabled) {
+		if (pp_enabled && pp_override) {
 
 			scene.overrideMaterial = depth_material;
 			renderer.render(scene, camera, depth_render_target, true);

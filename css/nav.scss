@@ -4,10 +4,10 @@ $global-font: 'Lato', sans-serif;
 
 // "chill" shade set
 $shade-1: #E5EEC1;
-$shade-2: #A2D4AB;
-$shade-3: #3EACA8;
-$shade-4: #547A82;
-$shade-5: #5A5050;
+$shade-2: #8e44ad;
+$shade-3: #9b59b6;
+$shade-4: #333;
+$shade-5: #222;
 
 $soft-shadow: rgba(0, 0, 0, 0.4);
 $softer-shadow: rgba(0, 0, 0, 0.2);
@@ -59,8 +59,7 @@ html, body {
 	padding: 0;
 	width: 100%;
 	box-shadow: 0 0 10px $soft-shadow;
-	border-bottom: 1px solid $shade-1;
-	text-shadow: 0 0 2px $softer-shadow;
+	//border-bottom: 1px solid $shade-1;
 
 	overflow: hidden;
 
@@ -77,6 +76,11 @@ html, body {
 		display: inline-block;
 		vertical-align: middle;
 		transition: 0.5s;
+
+		img {
+			height: 40px;
+			transition: 0.5s;
+		}
 	}
 
 	.left, .right {
@@ -106,24 +110,48 @@ html, body {
 		li {
 			display: inline-block;
 			padding: 10px;
-			border-radius: 5px;
 			text-transform: lowercase;
 
 			transition: 0.5s;
 		}
 
 		li:hover {
-			box-shadow: inset 5px 5px 0px $softer-shadow;
-			text-shadow: 5px 5px 0px $softer-shadow;
 			//border: 1px solid $shade-2;
-			background: $shade-4;
+			color: $shade-3;
 			cursor: pointer;
 		}
 
+		.btn-nav {
+			position: relative;
+			display: inline-block;
+		}
+
+		.btn-nav:hover {
+			color: $shade-3;
+		}
+
+		.btn-nav:before {
+			content: "";
+			position: absolute;
+			height: 2px;
+			left: 0;
+			bottom: 0;
+			width: 100%;
+			background: #FFF;
+			transition: 0.5s;
+			z-index: -1;
+		}
+
+		.btn-nav:hover:before {
+			height: 100%;
+		}
+
 		.selected {
-			@extend li:hover;
-			background: $shade-5;
-			//border: 1px solid $shade-2;
+			color: $shade-3;
+		}
+
+		.selected:before {
+			height: 100%;
 		}
 	}
 
@@ -158,6 +186,14 @@ html, body {
 
 	h2 {
 		font-size: 1em;
+		padding: 4px;
+		padding-left: 10px;
+		padding-right: 10px;
+
+		img {
+			height: 20px;
+			width: 20px;
+		}
 	}
 
 	.left, .right {

@@ -507,7 +507,7 @@ var GhostElement = function(ctrl, element) {
 	this.select_opts = {
 		swell: 0.25,
 		color: shades.mid,
-		opacity: 0.1,
+		opacity: 0.3,
 		wireframe: false
 	};
 
