@@ -93,10 +93,13 @@ $(document).ready(function() {
 		o_controls = new THREE.OrbitControls(o_camera, canvas.get(0));
 		o_controls.noKeys = true;
 
-		renderer = new THREE.WebGLRenderer({antialias: true});
+		// renderer = new THREE.WebGLRenderer({antialias: true});
+		renderer = new THREE.WebGLRenderer();
+		console.log("at render");
 		renderer.setSize(canvas.innerWidth(), canvas.innerHeight());
 		renderer.setClearColor(shades.darkest);
 		canvas.append(renderer.domElement);
+		console.log("at append");
 
 		// rendering lights
 		var light = new THREE.DirectionalLight("#FFF", 0.7);

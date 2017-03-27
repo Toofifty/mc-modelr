@@ -2,4 +2,5 @@
 .sass-cache/
 *.map
 
-*.bat
+*.bat.DS_Store
+*.DS_Store

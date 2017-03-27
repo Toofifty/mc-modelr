@@ -41,7 +41,6 @@ html, body {
 
 ::-webkit-scrollbar-thumb:hover {
 	background: $shade-2;
-	border: 2px solid $shade-4;
 }
 
 ::-webkit-scrollbar-corner {
@@ -234,6 +233,7 @@ html, body {
 	display: inline-block;
 	vertical-align: middle;
 	z-index: 2;
+	display: none;
 }
 
 .shade-1 { background: $shade-1; }

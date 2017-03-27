@@ -21,8 +21,7 @@ html, body {
   transition: 0.5s; }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #8e44ad;
-  border: 2px solid #333; }
+  background: #8e44ad; }
 
 ::-webkit-scrollbar-corner {
   background: #E5EEC1; }
@@ -146,7 +145,8 @@ html, body {
   height: 10px;
   display: inline-block;
   vertical-align: middle;
-  z-index: 2; }
+  z-index: 2;
+  display: none; }
 
 .shade-1 {
   background: #E5EEC1; }
